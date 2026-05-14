@@ -308,6 +308,11 @@
                         Hi! I'm Julian's AI assistant. Feel free to ask me about his experience, research, or anything about hospitality. How can I help?
                     </div>
                 </div>
+                <div class="chat-presets" id="chatPresets">
+                    <button class="chat-preset" data-q="Tell me about Julian's background">Julian's background</button>
+                    <button class="chat-preset" data-q="What is his research about?">Research interests</button>
+                    <button class="chat-preset" data-q="How can I contact Julian?">Contact info</button>
+                </div>
             </div>
             <div class="chat-footer">
                 <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." autocomplete="off">
@@ -322,19 +327,21 @@
 
     <script>
     (function() {
-        // ========== Config ==========
         const API_BASE = 'https://julianli8712-gifgithubio-production.up.railway.app';
+        const MAX_HISTORY = 20;
 
-        // ========== DOM refs ==========
+        // DOM
         const fab = document.getElementById('chatFab');
         const overlay = document.getElementById('chatOverlay');
         const body = document.getElementById('chatBody');
+        const presets = document.getElementById('chatPresets');
         const input = document.getElementById('chatInput');
         const send = document.getElementById('chatSend');
         const close = document.getElementById('chatClose');
 
         let isOpen = false;
         let isLoading = false;
+        var history = []; // { role, content }
 
         // ========== Open / Close ==========
         function openChat() {
@@ -344,86 +351,135 @@
             document.body.style.overflow = 'hidden';
             input.focus();
         }
-
         function closeChat() {
             isOpen = false;
             overlay.classList.remove('is-open');
             fab.classList.remove('is-open');
             document.body.style.overflow = '';
         }
-
         fab.addEventListener('click', function() { isOpen ? closeChat() : openChat(); });
         close.addEventListener('click', closeChat);
         overlay.addEventListener('click', function(e) { if (e.target === overlay) closeChat(); });
         document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && isOpen) closeChat(); });
 
-        // ========== Messages ==========
-        function addMessage(text, type) {
-            var div = document.createElement('div');
-            div.className = 'chat-message chat-message--' + type;
-            div.innerHTML = '<div class="chat-bubble">' + escapeHtml(text) + '</div>';
-            body.appendChild(div);
+        // ========== Helpers ==========
+        function esc(str) {
+            var d = document.createElement('div');
+            d.appendChild(document.createTextNode(str));
+            return d.innerHTML;
+        }
+
+        function scrollDown() {
             body.scrollTop = body.scrollHeight;
         }
 
-        function addTyping() {
-            var div = document.createElement('div');
-            div.className = 'chat-message chat-message--bot chat-message--typing';
-            div.innerHTML = '<div class="chat-bubble"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>';
-            div.id = 'typingIndicator';
-            body.appendChild(div);
-            body.scrollTop = body.scrollHeight;
-        }
-
-        function removeTyping() {
-            var el = document.getElementById('typingIndicator');
-            if (el) el.remove();
-        }
-
-        function escapeHtml(str) {
-            var div = document.createElement('div');
-            div.appendChild(document.createTextNode(str));
-            return div.innerHTML;
-        }
+        // ========== Preset questions ==========
+        presets.addEventListener('click', function(e) {
+            var btn = e.target.closest('.chat-preset');
+            if (!btn || isLoading) return;
+            var q = btn.getAttribute('data-q');
+            sendMessage(q);
+        });
 
         // ========== Send ==========
-        async function sendMessage() {
-            var text = input.value.trim();
+        async function sendMessage(text) {
             if (!text || isLoading) return;
+            text = text.trim();
+            if (!text) return;
 
             input.value = '';
-            addMessage(text, 'user');
-            addTyping();
             isLoading = true;
             send.disabled = true;
+
+            // Hide presets after first message
+            presets.style.display = 'none';
+
+            // Add user message to UI + history
+            addBubble(text, 'user');
+            history.push({ role: 'user', content: text });
+            if (history.length > MAX_HISTORY) history = history.slice(-MAX_HISTORY);
+
+            // Create placeholder for streaming reply
+            var replyDiv = createReplyDiv();
+            var fullReply = '';
 
             try {
                 var res = await fetch(API_BASE + '/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text })
+                    body: JSON.stringify({ messages: history })
                 });
-                var data = await res.json();
-                removeTyping();
-                if (data.reply) {
-                    addMessage(data.reply, 'bot');
-                } else {
-                    addMessage('Sorry, something went wrong. Please try again.', 'bot');
+
+                if (!res.ok) {
+                    replyDiv.querySelector('.chat-bubble').textContent = 'Something went wrong. Please try again.';
+                    isLoading = false;
+                    send.disabled = false;
+                    return;
+                }
+
+                var reader = res.body.getReader();
+                var decoder = new TextDecoder();
+                var buffer = '';
+
+                while (true) {
+                    var chunk = await reader.read();
+                    if (chunk.done) break;
+                    buffer += decoder.decode(chunk.value, { stream: true });
+
+                    // Parse SSE lines
+                    var lines = buffer.split('\n');
+                    buffer = lines.pop() || '';
+                    for (var i = 0; i < lines.length; i++) {
+                        var line = lines[i].trim();
+                        if (!line || line === 'data: [DONE]') continue;
+                        if (line.startsWith('data: ')) {
+                            try {
+                                var json = JSON.parse(line.slice(6));
+                                if (json.c) {
+                                    fullReply += json.c;
+                                    replyDiv.querySelector('.chat-bubble').textContent = fullReply;
+                                    scrollDown();
+                                }
+                            } catch(e) {}
+                        }
+                    }
                 }
             } catch (err) {
-                removeTyping();
-                addMessage('Unable to reach the assistant. Please try again later.', 'bot');
                 console.error(err);
+                replyDiv.querySelector('.chat-bubble').textContent = fullReply || 'Unable to reach the assistant.';
+            }
+
+            if (fullReply) {
+                history.push({ role: 'assistant', content: fullReply });
+                if (history.length > MAX_HISTORY) history = history.slice(-MAX_HISTORY);
             }
 
             isLoading = false;
             send.disabled = false;
             input.focus();
+            scrollDown();
         }
 
-        send.addEventListener('click', sendMessage);
+        function addBubble(text, type) {
+            var div = document.createElement('div');
+            div.className = 'chat-message chat-message--' + type;
+            div.innerHTML = '<div class="chat-bubble">' + esc(text) + '</div>';
+            body.appendChild(div);
+            scrollDown();
+        }
+
+        function createReplyDiv() {
+            var div = document.createElement('div');
+            div.className = 'chat-message chat-message--bot';
+            div.innerHTML = '<div class="chat-bubble"></div>';
+            body.appendChild(div);
+            scrollDown();
+            return div;
+        }
+
+        send.addEventListener('click', function() { sendMessage(input.value); });
         input.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(input.value); }
         });
     })();
     </script>

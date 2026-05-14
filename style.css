@@ -703,6 +703,33 @@ a {
     40% { transform: scale(1); }
 }
 
+/* ====== AI Chat: Preset questions ====== */
+.chat-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.chat-preset {
+    padding: 8px 16px;
+    border: 1px solid hsl(210, 10%, 80%);
+    border-radius: 20px;
+    background: #fff;
+    color: var(--text);
+    font-size: 13px;
+    font-family: var(--font-body);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.chat-preset:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: hsl(22, 91%, 54%, 0.05);
+}
+
 /* ====== AI Chat: Footer ====== */
 .chat-footer {
     display: flex;

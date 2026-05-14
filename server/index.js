@@ -14,25 +14,23 @@ const client = new OpenAI({
   baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1",
 });
 
-const SYSTEM_PROMPT = `You are Julian Li's AI assistant on his personal website (julianli.net). Answer questions about Julian professionally, concisely, and warmly. If asked something unrelated, politely redirect to topics about Julian's career, research, or hospitality.
+const SYSTEM_PROMPT = `You are Julian Li's AI assistant. Be concise and direct. Never invent information. If unsure, say "I don't have that information." Answer in the same language the user asks.
 
-Key facts about Julian Li:
-- Current: Hotel Manager at The Westin Beijing Financial Street (483 rooms, multi-outlet F&B, 1,600 sqm MICE), 2022–present
-- Previously: Director of F&B at Waldorf Astoria Beijing (2017–2019, 2021–2022), Area Manager at WeWork Beijing (2019–2021), ADOFB at Sheraton Qingdao (2015–2017), F&B Manager at Sheraton Macau (2012–2015)
-- Education: DHTM candidate at The Hong Kong Polytechnic University (In Progress), M.Sc. in Hotel & Tourism Management from Guilin University of Technology (2024)
-- Research interests: Hotel digital transformation, AI application & governance in hospitality, cultural tourism integration
-- Certifications: Marriott Development Academy (MDA) Hotel Leadership Certificate, Hilton Leader in Luxury
-- Academic roles: External Graduate Supervisor at SISU (Sichuan International Studies University), Guest Lecturer at Beijing Jiaotong University and Guilin University of Technology
-- Industry role: Expert Reviewer for Catering Service Standards, Ministry of Human Resources and Social Security
+Julian Li — core facts:
+- Hotel Manager, The Westin Beijing Financial Street (483 rooms, multi-outlet F&B, 1,600 sqm MICE), 2022–present
+- Previously: DoFB at Waldorf Astoria Beijing (2017–2019, 2021–2022), Area Manager at WeWork Beijing (2019–2021), ADOFB at Sheraton Qingdao (2015–2017), F&B Manager at Sheraton Macau (2012–2015)
+- Education: DHTM candidate at PolyU (In Progress), M.Sc. Hotel & Tourism Management, Guilin University of Technology (2024)
+- Research: hotel digital transformation, AI governance in hospitality, cultural tourism integration
+- Certifications: MDA Hotel Leadership Certificate, Hilton Leader in Luxury
+- Academic: External Graduate Supervisor at SISU, Guest Lecturer at Beijing Jiaotong University & Guilin University of Technology
+- Industry: Expert Reviewer for Catering Service Standards, Ministry of Human Resources and Social Security
 - Languages: Mandarin (Native), English (Fluent), Cantonese (Fluent listening, Intermediate speaking)
-- Contact: julian.li8712@gmail.com, LinkedIn (Julian Jun Li), +852 8495 7374
-- Location: Hong Kong SAR & Beijing, China
-- Experience: 15+ years in luxury hospitality across Waldorf Astoria, Westin, Sheraton, and WeWork`;
+- Contact: julian.li8712@gmail.com | LinkedIn: Julian Jun Li | +852 8495 7374
+- 15+ years in luxury hospitality`;
 
-// Simple in-memory rate limiter: max 10 requests per minute per IP
-const rateLimitMap = new Map();
-const RATE_LIMIT = 10;
+const RATE_LIMIT = 15;
 const RATE_WINDOW_MS = 60 * 1000;
+const rateLimitMap = new Map();
 
 function checkRateLimit(ip) {
   const now = Date.now();
@@ -46,7 +44,6 @@ function checkRateLimit(ip) {
   return true;
 }
 
-// Clean up stale entries every 5 minutes
 setInterval(() => {
   const cutoff = Date.now() - RATE_WINDOW_MS;
   for (const [ip, entry] of rateLimitMap) {
@@ -58,38 +55,61 @@ app.post("/api/chat", async (req, res) => {
   const ip = req.ip || req.connection.remoteAddress;
 
   if (!checkRateLimit(ip)) {
-    return res.status(429).json({ error: "Too many requests. Please wait a moment." });
+    return res.status(429).json({ error: "Too many requests." });
   }
 
-  const { message } = req.body;
-  if (!message || typeof message !== "string" || message.trim().length === 0) {
-    return res.status(400).json({ error: "Message is required." });
+  const { messages } = req.body;
+  if (!messages || !Array.isArray(messages) || messages.length === 0) {
+    return res.status(400).json({ error: "Messages array is required." });
   }
-  if (message.length > 2000) {
-    return res.status(400).json({ error: "Message is too long." });
+
+  // Validate each message
+  for (const m of messages) {
+    if (!m.role || !m.content || typeof m.content !== "string") {
+      return res.status(400).json({ error: "Invalid message format." });
+    }
+    if (m.content.length > 4000) {
+      return res.status(400).json({ error: "Message too long." });
+    }
   }
 
   try {
-    const completion = await client.chat.completions.create({
+    const stream = await client.chat.completions.create({
       model: "qwen-plus",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: message.trim() },
+        ...messages,
       ],
-      temperature: 0.7,
-      max_tokens: 1000,
+      temperature: 0.6,
+      max_tokens: 800,
+      stream: true,
     });
 
-    const reply = completion.choices[0].message.content;
-    res.json({ reply });
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+
+    for await (const chunk of stream) {
+      const content = chunk.choices[0]?.delta?.content;
+      if (content) {
+        res.write(`data: ${JSON.stringify({ c: content })}\n\n`);
+      }
+    }
+
+    res.write("data: [DONE]\n\n");
+    res.end();
   } catch (err) {
     console.error("Bailian API error:", err);
-    res.status(500).json({ error: "Something went wrong. Please try again." });
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Something went wrong." });
+    } else {
+      res.end();
+    }
   }
 });
 
 app.get("/", (req, res) => {
-  res.json({ status: "Julian Li AI Chat Backend is running." });
+  res.json({ status: "ok" });
 });
 
 app.listen(PORT, () => {

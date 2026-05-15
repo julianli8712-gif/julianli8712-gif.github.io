@@ -298,11 +298,11 @@
                         <span class="contact-detail">+852 8495 7374</span>
                     </div>
                 </a>
-                <div class="contact-link reveal">
-                    <span class="contact-icon">💬</span>
+                <div class="contact-link reveal" id="contactChatTrigger">
+                    <span class="contact-icon">🤖</span>
                     <div>
-                        <strong>WeChat Official Account</strong>
-                        <span class="contact-detail">Hotel &amp; Tourism Insights</span>
+                        <strong>Chat with Julian's AI</strong>
+                        <span class="contact-detail">Ask me anything about hospitality</span>
                     </div>
                 </div>
             </div>
@@ -400,6 +400,8 @@
             document.body.style.overflow = '';
         }
         fab.addEventListener('click', function() { isOpen ? closeChat() : openChat(); });
+        var contactTrigger = document.getElementById('contactChatTrigger');
+        if (contactTrigger) { contactTrigger.addEventListener('click', openChat); contactTrigger.style.cursor = 'pointer'; }
         close.addEventListener('click', closeChat);
         overlay.addEventListener('click', function(e) { if (e.target === overlay) closeChat(); });
         document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && isOpen) closeChat(); });

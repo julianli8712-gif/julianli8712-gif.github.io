@@ -92,6 +92,7 @@ a {
 .hero {
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
@@ -102,6 +103,9 @@ a {
 
 .hero-content {
     max-width: 640px;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
 .hero-avatar {
@@ -807,5 +811,152 @@ a {
 
     .chat-overlay.is-open .chat-modal {
         transform: translateY(0);
+    }
+}
+
+/* ====== Scroll Reveal Animation ====== */
+.reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Stagger delays for cards */
+.reveal:nth-child(1) { transition-delay: 0s; }
+.reveal:nth-child(2) { transition-delay: 0.1s; }
+.reveal:nth-child(3) { transition-delay: 0.2s; }
+.reveal:nth-child(4) { transition-delay: 0.15s; }
+.reveal:nth-child(5) { transition-delay: 0.25s; }
+.reveal:nth-child(6) { transition-delay: 0.3s; }
+
+/* ====== Stats Bar (Hero bottom) ====== */
+.stats-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    max-width: 720px;
+    margin: 48px auto 0;
+    background: rgba(255,255,255,0.08);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 28px 20px;
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(8px);
+}
+
+.stat-number {
+    font-family: var(--font-heading);
+    font-size: 48px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.stat-number sup {
+    font-size: 28px;
+    font-weight: 400;
+    vertical-align: top;
+}
+
+.stat-label {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: hsl(210, 20%, 68%);
+}
+
+@media (max-width: 640px) {
+    .stats-bar {
+        grid-template-columns: 1fr;
+        gap: 1px;
+    }
+
+    .stat-item {
+        padding: 20px 16px;
+    }
+
+    .stat-number {
+        font-size: 36px;
+    }
+}
+
+/* ====== Back to Top ====== */
+.back-to-top {
+    position: fixed;
+    bottom: 96px;
+    right: 34px;
+    z-index: 998;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--white);
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease, box-shadow 0.25s ease;
+    box-shadow: var(--shadow-subtle);
+}
+
+.back-to-top.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.back-to-top:hover {
+    box-shadow: var(--shadow-card);
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+}
+
+/* ====== AI Chat FAB: Pill mode (desktop) ====== */
+@media (min-width: 481px) {
+    .chat-fab {
+        width: auto;
+        height: auto;
+        border-radius: 28px;
+        padding: 12px 22px;
+        gap: 10px;
+    }
+
+    .chat-fab-icon--open,
+    .chat-fab-icon--close {
+        width: 20px;
+        height: 20px;
+    }
+
+    .chat-fab-text {
+        display: inline;
+        font-family: var(--font-body);
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.2px;
+    }
+}
+
+.chat-fab-text { display: none; }
+
+@media (max-width: 480px) {
+    .back-to-top {
+        bottom: 84px;
+        right: 24px;
     }
 }

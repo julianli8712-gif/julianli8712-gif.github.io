@@ -91,6 +91,37 @@ EOF
 - Use pooler (port 6543, `?pgbouncer=true`)
 - `.env` at `/opt/winepair/server/.env` (never commit)
 
+## Operational Safeguards (2026-05-28)
+
+### Database Backup
+- **Script**: `server/scripts/backup-export.ts` — exports all 9 tables as JSON
+- **Cron**: daily at 4am, cleanup at 5am (keep 7 days)
+- **Location**: `/opt/winepair/backups/backup-YYYY-MM-DDTHH-mm-ss/`
+- **Known issue**: `__dirname` in ESM resolves to `src/` path; redirect manually if needed
+
+### Error Monitoring (Sentry)
+- **DSN**: `https://529b7240f...@o4511467232428032.ingest.us.sentry.io/4511467263229952`
+- **Setup**: `instrument.mjs` (pure JS, NOT tsx) loaded via `--import` flag
+- **Critical**: Must use `.mjs` + `--import` — tsx + TypeScript + IITM are incompatible
+- **Error response**: includes `requestId` (UUID) + `sentryEventId` (Sentry event ID)
+
+### Rate Limiting
+| Limiter | Scope | Limit |
+|---------|-------|-------|
+| `globalLimiter` | All routes | 100 req/min/IP |
+| `authLimiter` | `/api/auth/*` | 5 req/min/IP |
+| `aiLimiter` | `/api/recommendations/*` | 10 req/min/IP |
+| `importLimiter` | `/api/import/*` | 5 req/min/IP |
+
+### PM2 Configuration
+- **Start command**: `pm2 start "npx tsx --import /opt/winepair/server/src/instrument.mjs src/index.ts" --name winepair --cwd /opt/winepair/server`
+- **Logrotate**: 10MB per file, retain 30 days, compression enabled
+- **Warning**: PM2 runs its own command, NOT package.json scripts. Changes to npm scripts don't auto-apply.
+
+### Request Tracing
+- Every request gets a UUID via middleware (`server/src/index.ts:28`)
+- Error responses include both `requestId` and `sentryEventId`
+
 ## Common Pitfalls
 
 1. **macOS tar on Linux**: `LIBARCHIVE.xattr.*` warnings are harmless
@@ -99,6 +130,9 @@ EOF
 4. **qwen3.6+ models** — need `enable_thinking: false` or will timeout (>10s)
 5. **Qwen3.x Flash models** work on OpenAI-compatible API; DeepSeek models require native API
 6. **No `--strip-components`** on frontend tar
+7. **Sentry + tsx + ESM**: Must use `.mjs` instrument file + `--import` flag. TypeScript instrument file won't work.
+8. **PM2 ignores npm scripts**: PM2 runs its own command string. After changing `package.json` scripts, must `pm2 delete` + `pm2 start` to update.
+9. **.env trailing newline**: Always ensure `.env` ends with a newline. `echo >>` appends without one, breaking dotenv parsing.
 
 ## Key Files
 
@@ -107,6 +141,11 @@ EOF
 | `server/src/services/qwenService.ts` | AI model, system prompt, timeout, thinking mode |
 | `server/src/routes/recommendations.ts` | Pairing rules, post-validation, reason correction |
 | `server/src/services/ruleEngine.ts` | Fallback rule engine |
+| `server/src/middleware/security.ts` | Rate limiters (global, auth, AI, import) + helmet + HTTPS redirect |
+| `server/src/middleware/errorHandler.ts` | Global error handler, Sentry capture, requestId + sentryEventId |
+| `server/src/middleware/sentry.ts` | Sentry Express error handler setup |
+| `server/src/instrument.mjs` | Sentry init (pure JS, loaded before Express via --import) |
+| `server/scripts/backup-export.ts` | Database backup: exports all 9 tables as JSON |
 | `client/src/types/sommelierRules.ts` | Frontend pairing maps, tasting templates, country i18n |
 | `client/src/components/guest/WineList.tsx` | Prego Wine List (browse) |
 | `client/src/components/guest/DishMenu.tsx` | Prego Menu (browse) |
@@ -114,3 +153,38 @@ EOF
 | `client/src/components/guest/DishSelector.tsx` | AI dish selection |
 | `client/src/components/guest/GuestHome.tsx` | Guest landing (2×2 grid) |
 | `client/src/components/SommelierThinking.tsx` | AI loading animation |
+
+## Optimization Roadmap
+
+### Phase 1: Foundation ✅
+- [x] ICP filing + SSL certificates
+- [x] Model speed (qwen3.6-flash, ~2.6s)
+- [x] Pairing quality (99/100 exam score)
+- [x] Guest browsing (Prego Menu + Wine List)
+- [x] UI consistency (country i18n, layout alignment)
+- [x] 155 AI tasting notes (dishes + wines)
+
+### Phase 2: Operational Safeguards ✅ (2026-05-28)
+- [x] Database auto-backup (daily 4am, 7-day rotation)
+- [x] Sentry error monitoring (ESM auto-instrumentation)
+- [x] API rate limiting (AI 10/min, import 5/min)
+- [x] PM2 log rotation (10MB/30d)
+- [x] Request tracing (UUID + sentryEventId)
+
+### Phase 3: Real-World Validation (current)
+- [ ] Restaurant field testing — collect guest feedback
+- [ ] Usage analytics — which features are guests actually using?
+- [ ] AI recommendation accuracy — spot-check real recommendations
+- [ ] Performance under load — multiple tables simultaneously
+
+### Phase 4: Product Polish (future)
+- [ ] Recommendation result page UX refresh
+- [ ] Skeleton screens for cold-load states
+- [ ] Offline mode hardening (PWA)
+- [ ] Tasting note human review pass
+
+### Phase 5: Growth (future)
+- [ ] Multi-restaurant support (schema ready, needs UI)
+- [ ] Wine inventory management
+- [ ] Guest preference learning
+- [ ] WeChat Mini Program version

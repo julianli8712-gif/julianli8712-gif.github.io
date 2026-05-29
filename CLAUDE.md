@@ -73,6 +73,8 @@ scp /tmp/winepair-dist.tar.gz /tmp/winepair-server.tar.gz root@47.99.139.95:/tmp
 ssh root@47.99.139.95 << 'EOF'
   rm -rf /www/wwwroot/winepair/*
   tar xzf /tmp/winepair-dist.tar.gz -C /www/wwwroot/winepair/
+  find /www/wwwroot/winepair/ -type f -exec chmod 644 {} +       # fix macOS tar permissions
+  find /www/wwwroot/winepair/ -type d -exec chmod 755 {} +
   rm -rf /opt/winepair/server/src /opt/winepair/server/prisma /opt/winepair/server/package.json
   tar xzf /tmp/winepair-server.tar.gz -C /opt/winepair/
   cd /opt/winepair/server && npm install --omit=dev && npx prisma generate

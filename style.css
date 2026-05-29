@@ -12,8 +12,8 @@
     --shadow-card: 0 8px 25px -8px hsl(210 29% 24% / 0.12);
     --shadow-subtle: 0 2px 8px -2px hsl(210 29% 24% / 0.06);
     --radius: 0.75rem;
-    --font-heading: "Playfair Display", serif;
-    --font-body: "Montserrat", sans-serif;
+    --font-heading: "Georgia", "Noto Serif SC", "STSong", "Songti SC", serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", sans-serif;
 }
 
 /* ====== 重置 ====== */
@@ -88,6 +88,11 @@ a {
     color: var(--accent);
 }
 
+.nav-links a.active {
+    color: var(--accent);
+    font-weight: 600;
+}
+
 /* ====== Hero 主视觉 ====== */
 .hero {
     min-height: 100vh;
@@ -99,6 +104,17 @@ a {
     background: linear-gradient(135deg, var(--navy), var(--navy-dark));
     color: #fff;
     padding: 120px 24px 80px;
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(to bottom, transparent, var(--bg));
+    pointer-events: none;
 }
 
 .hero-content {

@@ -6,10 +6,6 @@
     <title>Julian Li — Luxury Hotel Leader, Researcher & Educator</title>
     <meta name="description" content="Julian Li — Hotel Manager at The Westin Beijing Financial Street. 15+ years in luxury hospitality across Waldorf Astoria, Westin, Sheraton. External Graduate Supervisor at SISU.">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -603,6 +599,25 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         }
+    })();
+
+    // ====== Nav scroll highlighting ======
+    (function() {
+      var sections = document.querySelectorAll('section[id]');
+      var navLinks = document.querySelectorAll('.nav-links a');
+      var observer = new IntersectionObserver(function(entries) {
+        var activeId = null;
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) activeId = entry.target.id;
+        });
+        if (activeId) {
+          navLinks.forEach(function(link) {
+            link.classList.toggle('active', link.getAttribute('href') === '#' + activeId);
+          });
+        }
+      }, { rootMargin: '-40% 0px -55% 0px' });
+
+      sections.forEach(function(section) { observer.observe(section); });
     })();
     </script>
 

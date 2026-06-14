@@ -1,192 +1,69 @@
-# CLAUDE.md — WinePair + Julian Li Personal Site
+# CLAUDE.md
 
-## Project Overview
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-Two sites on one Alibaba Cloud server (47.99.139.95):
+## Shared Infrastructure
 
-| Site | Path | DNS | Status |
-|------|------|-----|--------|
-| Julian Li Personal Homepage | `/www/wwwroot/julianli/` | julianli.net, www.julianli.net | ✅ ICP已通过 + SSL |
-| WinePair SaaS | `/www/wwwroot/winepair/` | winepair.julianli.net | ✅ ICP已通过 + SSL |
+Two sites on one Alibaba Cloud server:
 
-## Server
+| Site | Server Path | Domain |
+|------|-------------|--------|
+| Personal Homepage | `/www/wwwroot/julianli/` | julianli.net, www.julianli.net |
+| WinePair | `/www/wwwroot/winepair/` | winepair.julianli.net |
 
-- **IP**: 47.99.139.95 (华东1杭州, 2vCPU 2GiB, 40GB, expiry 2027-05-21)
-- **OS**: Alibaba Cloud Linux 3 (OpenAnolis Edition)
+- **Server**: 47.99.139.95 (华东1杭州, 2vCPU 2GiB, 40GB, expiry 2027-05-21), Alibaba Cloud Linux 3
 - **SSH**: `ssh root@47.99.139.95` (key installed)
-- **Old server**: 121.199.3.210 (expires 2026-06-20, to be decommissioned)
-
-## WinePair Architecture
-
-- **Frontend**: React 18 + Vite + MUI 6 + Tailwind, built to `/www/wwwroot/winepair/`
-- **Backend**: Express 4 + Prisma 6 + Supabase PostgreSQL, PM2 at `/opt/winepair/server/`
-- **AI**: DashScope qwen3.6-flash (enable_thinking: false, 4s timeout, ~2.6s avg response)
-- **Auth**: JWT access_token (15min) + refresh_token (7d), bcryptjs
-- **RBAC**: admin / manager / waiter roles
-- **i18n**: zh-CN / en, country chips follow system language
-- **PWA**: Service worker with offline support
-- **DB**: Supabase PostgreSQL (free tier), connection pooler required. Never local SQLite.
 - **SSL**: Let's Encrypt via certbot, auto-renewal daily at 3am
-- **Pairing exam score**: 99/100
+- **ICP**: 京ICP备2022005355号 / 京公网安备11010502061016号
 
-## Nginx Config (current)
+### Nginx (`/etc/nginx/conf.d/julianli.conf`)
+- `julianli.net:443` → `/www/wwwroot/julianli/` (default_server)
+- `winepair.julianli.net:443` → `/www/wwwroot/winepair/`
+- Port 80 → HTTPS redirect (`.txt` bypass for WeChat verification)
+- `/api/chat` → `proxy_pass 127.0.0.1:3001` (personal site AI assistant)
+- `/api/` → `proxy_pass 127.0.0.1:3000` (WinePair backend)
 
-```
-/etc/nginx/conf.d/julianli.conf:
-  - julianli.net:443 → /www/wwwroot/julianli/ (personal homepage, default_server)
-  - winepair.julianli.net:443 → /www/wwwroot/winepair/ (WinePair)
-  - Port 80: HTTP→HTTPS redirect (with .txt bypass for WeChat verification)
-  - Port 8080: WinePair backup (IP direct access, testing)
-  - /api/ → proxy_pass 127.0.0.1:3000
-```
+### Shared Deployment Gotchas
+- **macOS tar on Linux**: `LIBARCHIVE.xattr.*` warnings harmless; always `chmod 644/755` after extract
+- **Deploy tar MUST exclude `.env`** — contains credentials
+- **WeChat .txt files**: keep in project source (deploy `rm -rf` wipes them)
 
-## Guest Features
+## Personal Site
 
-- **GuestHome**: 2×2 grid (Browse row: Prego Menu + Wine List on top; AI row: Dish→Wine + Wine→Dish below)
-- **Prego Menu** — Browse dishes by category (上菜顺序), with Chef Tony tasting notes + sommelier wine suggestions
-- **Prego Wine List** — Browse wines by country→type→glass, glass-only toggle, with sommelier tasting notes + chef dish suggestions
-- **AI Dish→Wine / Wine→Dish** — Multi-select, country chips, grouped layout matching Wine List
-- **Bottom action bar**: Fixed bar with clear-all + selected count + recommend button
-- **SommelierThinking**: 3-step animation (1s/step), synced with ~3s AI response
-
-## Post-Validation Rules (recommendations.ts)
-
-1. Heavy meat (和牛/战斧/肋排) + white/rosé → auto-replace with red
-2. Dessert (提拉米苏/巧克力/焦糖/布丁) + dry sparkling → auto-replace with sweet/fortified
-3. Seafood soup + red → auto-replace with white
-4. Raw fish (三文鱼/金枪鱼/carpaccio) + non-light red (not Pinot Noir/Gamay) → replace with white/sparkling
-5. Dedup by dish name, fill to 3 items
-6. AI reason correction: red wine selected but reason mentions white → auto-fix (and vice versa)
-7. Glass wine enforcement: exactly 1 by-glass per recommendation
-
-## Deployment
-
-```bash
-# Build frontend
-cd client && npx vite build && tar czf /tmp/winepair-dist.tar.gz -C dist .
-
-# Package server (NO node_modules)
-tar czf /tmp/winepair-server.tar.gz --exclude='node_modules' --exclude='data' --exclude='.env' --exclude='.git' server
-
-# Upload & deploy
-scp /tmp/winepair-dist.tar.gz /tmp/winepair-server.tar.gz root@47.99.139.95:/tmp/
-ssh root@47.99.139.95 << 'EOF'
-  rm -rf /www/wwwroot/winepair/*
-  tar xzf /tmp/winepair-dist.tar.gz -C /www/wwwroot/winepair/
-  find /www/wwwroot/winepair/ -type f -exec chmod 644 {} +       # fix macOS tar permissions
-  find /www/wwwroot/winepair/ -type d -exec chmod 755 {} +
-  rm -rf /opt/winepair/server/src /opt/winepair/server/prisma /opt/winepair/server/package.json
-  tar xzf /tmp/winepair-server.tar.gz -C /opt/winepair/
-  cd /opt/winepair/server && npm install --omit=dev && npx prisma generate
-  pm2 restart winepair && pm2 save && nginx -s reload
-EOF
-```
-
-## WinePair Login
-
-- admin / admin123
-- Email auto-appends @winepair.local
-
-## Supabase Connection
-
-- Project ref: `oyhcntyconvdekxaaphm`, ap-southeast-1
-- Use pooler (port 6543, `?pgbouncer=true`)
-- `.env` at `/opt/winepair/server/.env` (never commit)
-
-## Operational Safeguards (2026-05-28)
-
-### Database Backup
-- **Script**: `server/scripts/backup-export.ts` — exports all 9 tables as JSON
-- **Cron**: daily at 4am, cleanup at 5am (keep 7 days)
-- **Location**: `/opt/winepair/backups/backup-YYYY-MM-DDTHH-mm-ss/`
-- **Known issue**: `__dirname` in ESM resolves to `src/` path; redirect manually if needed
-
-### Error Monitoring (Sentry)
-- **DSN**: `https://529b7240f...@o4511467232428032.ingest.us.sentry.io/4511467263229952`
-- **Setup**: `instrument.mjs` (pure JS, NOT tsx) loaded via `--import` flag
-- **Critical**: Must use `.mjs` + `--import` — tsx + TypeScript + IITM are incompatible
-- **Error response**: includes `requestId` (UUID) + `sentryEventId` (Sentry event ID)
-
-### Rate Limiting
-| Limiter | Scope | Limit |
-|---------|-------|-------|
-| `globalLimiter` | All routes | 100 req/min/IP |
-| `authLimiter` | `/api/auth/*` | 5 req/min/IP |
-| `aiLimiter` | `/api/recommendations/*` | 10 req/min/IP |
-| `importLimiter` | `/api/import/*` | 5 req/min/IP |
-
-### PM2 Configuration
-- **Start command**: `pm2 start "npx tsx --import /opt/winepair/server/src/instrument.mjs src/index.ts" --name winepair --cwd /opt/winepair/server`
-- **Logrotate**: 10MB per file, retain 30 days, compression enabled
-- **Warning**: PM2 runs its own command, NOT package.json scripts. Changes to npm scripts don't auto-apply.
-
-### Request Tracing
-- Every request gets a UUID via middleware (`server/src/index.ts:28`)
-- Error responses include both `requestId` and `sentryEventId`
-
-## Common Pitfalls
-
-1. **macOS tar on Linux**: `LIBARCHIVE.xattr.*` warnings are harmless
-2. **Deploy tar MUST exclude .env** — contains Supabase credentials
-3. **Deploy `rm -rf /www/wwwroot/winepair/*`** — deletes WeChat verification txt files; keep them in `client/public/`
-4. **qwen3.6+ models** — need `enable_thinking: false` or will timeout (>10s)
-5. **Qwen3.x Flash models** work on OpenAI-compatible API; DeepSeek models require native API
-6. **No `--strip-components`** on frontend tar
-7. **Sentry + tsx + ESM**: Must use `.mjs` instrument file + `--import` flag. TypeScript instrument file won't work.
-8. **PM2 ignores npm scripts**: PM2 runs its own command string. After changing `package.json` scripts, must `pm2 delete` + `pm2 start` to update.
-9. **.env trailing newline**: Always ensure `.env` ends with a newline. `echo >>` appends without one, breaking dotenv parsing.
-
-## Key Files
+Single-page site with embedded AI chat assistant.
 
 | File | Role |
 |------|------|
-| `server/src/services/qwenService.ts` | AI model, system prompt, timeout, thinking mode |
-| `server/src/routes/recommendations.ts` | Pairing rules, post-validation, reason correction |
-| `server/src/services/ruleEngine.ts` | Fallback rule engine |
-| `server/src/middleware/security.ts` | Rate limiters (global, auth, AI, import) + helmet + HTTPS redirect |
-| `server/src/middleware/errorHandler.ts` | Global error handler, Sentry capture, requestId + sentryEventId |
-| `server/src/middleware/sentry.ts` | Sentry Express error handler setup |
-| `server/src/instrument.mjs` | Sentry init (pure JS, loaded before Express via --import) |
-| `server/scripts/backup-export.ts` | Database backup: exports all 9 tables as JSON |
-| `client/src/types/sommelierRules.ts` | Frontend pairing maps, tasting templates, country i18n |
-| `client/src/components/guest/WineList.tsx` | Prego Wine List (browse) |
-| `client/src/components/guest/DishMenu.tsx` | Prego Menu (browse) |
-| `client/src/components/guest/WineSelector.tsx` | AI wine selection (matches WineList layout) |
-| `client/src/components/guest/DishSelector.tsx` | AI dish selection |
-| `client/src/components/guest/GuestHome.tsx` | Guest landing (2×2 grid) |
-| `client/src/components/SommelierThinking.tsx` | AI loading animation |
+| `index.html` | Full page: hero, appointments, footer, AI chat UI (inline) |
+| `style.css` | All styles |
+| `server/index.js` | Express API server — `/api/chat` endpoint, DashScope qwen-plus, SSE streaming |
+| `备案图标.png` | ICP footer icon |
+| `CNAME` | Custom domain record |
 
-## Optimization Roadmap
+### Deploy (personal site only)
+```bash
+scp index.html style.css 备案图标.png root@47.99.139.95:/www/wwwroot/julianli/
+scp server/index.js root@47.99.139.95:/opt/julianli-server/
+ssh root@47.99.139.95 "pm2 restart julianli-server && nginx -s reload"
+```
 
-### Phase 1: Foundation ✅
-- [x] ICP filing + SSL certificates
-- [x] Model speed (qwen3.6-flash, ~2.6s)
-- [x] Pairing quality (99/100 exam score)
-- [x] Guest browsing (Prego Menu + Wine List)
-- [x] UI consistency (country i18n, layout alignment)
-- [x] 155 AI tasting notes (dishes + wines)
+### Local Dev
+```bash
+cd server
+echo 'DASHSCOPE_API_KEY=sk-...' > .env   # get key from production /opt/julianli-server/.env
+npm install && npm start                   # runs on port 3000 by default
+```
+No build step — personal site is static HTML/CSS/JS served directly.
 
-### Phase 2: Operational Safeguards ✅ (2026-05-28)
-- [x] Database auto-backup (daily 4am, 7-day rotation)
-- [x] Sentry error monitoring (ESM auto-instrumentation)
-- [x] API rate limiting (AI 10/min, import 5/min)
-- [x] PM2 log rotation (10MB/30d)
-- [x] Request tracing (UUID + sentryEventId)
+### AI Chat Backend
+- **Model**: DashScope qwen-plus (via OpenAI-compatible SDK, `dashscope.aliyuncs.com/compatible-mode/v1`)
+- **System prompt**: DashScope compatible-mode rejects `system` role — resolved by prepending to first user message with server-side language detection (`IMPORTANT: Reply in English.` or `用中文回复。`)
+- **SSE streaming**: Nginx MUST have `proxy_buffering off;` on `/api/chat` location, otherwise responses arrive all at once
+- **Rate limit**: 15 req/min/IP via `X-Real-IP` header (Nginx sets it), 4000 char cap per message
+- **Timeout**: 15s abort controller on API calls
+- **PM2**: `pm2 start index.js --name julianli-server` (port 3001 on production, separate from WinePair on 3000)
+- **API key**: `DASHSCOPE_API_KEY` in `.env`, separate from WinePair's key
 
-### Phase 3: Real-World Validation (current)
-- [ ] Restaurant field testing — collect guest feedback
-- [ ] Usage analytics — which features are guests actually using?
-- [ ] AI recommendation accuracy — spot-check real recommendations
-- [ ] Performance under load — multiple tables simultaneously
+---
 
-### Phase 4: Product Polish (future)
-- [ ] Recommendation result page UX refresh
-- [ ] Skeleton screens for cold-load states
-- [ ] Offline mode hardening (PWA)
-- [ ] Tasting note human review pass
-
-### Phase 5: Growth (future)
-- [ ] Multi-restaurant support (schema ready, needs UI)
-- [ ] Wine inventory management
-- [ ] Guest preference learning
-- [ ] WeChat Mini Program version
+> **WinePair development**: `cd winepair` — that directory has its own CLAUDE.md with full WinePair architecture, AI services, database, deployment, and roadmap.

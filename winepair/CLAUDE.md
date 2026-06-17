@@ -23,8 +23,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Prego Menu** — Browse dishes by category (上菜顺序), with Chef Tony tasting notes + sommelier wine suggestions
 - **Prego Wine List** — Browse wines by country→type→glass, glass-only toggle, with sommelier tasting notes + chef dish suggestions
 - **AI Dish→Wine / Wine→Dish** — Multi-select, country chips, grouped layout matching Wine List
+- **Three pairing modes**: Classic (🍷 must be by-glass) / Bold (🔥 contrast) / Surprise (✨ terroir story)
+- **Result cards**: Image thumbnails with mode subtitles, guest-facing `reason`, "您的专属推荐"
 - **Bottom action bar**: Fixed bar with clear-all + selected count + recommend button
 - **SommelierThinking**: 3-step animation (1s/step), synced with ~3s AI response
+
+## Waiter Features
+
+- **WaiterPanel** (`/waiter`): Search-first layout with uniform 80×80 image cards
+- **Product tip library**: Tap any dish/wine → centered dialog (maxWidth sm) with 380px image + 🍷 sales_tip
+- **AI recommend**: Multi-select items → full-screen result view with server_tip directly readable
+- **server_tip vs reason**: Guest sees pairing reason, waiter sees selling script (role-isolated)
+- **149 AI-generated sales tips** across all dishes (56) and wines (98), stored as `sales_tip` field
+- **Bottom bar**: Slide-in with collapsible customer note, recommend button, item count
+
+## Analytics
+
+- **Tracking**: dish_detail_open, wine_detail_open (glass/bottle split), recommend_start/result/vote funnel
+- **Dashboard**: Embedded in admin home, Apple-style cards, time range (today/7d/30d), top 5 dishes/wines
+- **API**: `POST /api/analytics/event` (fire-and-forget), `GET /api/analytics/dashboard` (admin auth)
 
 ## Post-Validation Rules (recommendations.ts)
 
@@ -34,7 +51,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 4. Raw fish (三文鱼/金枪鱼/carpaccio) + non-light red (not Pinot Noir/Gamay) → replace with white/sparkling
 5. Dedup by dish name, fill to 3 items
 6. AI reason correction: red wine selected but reason mentions white → auto-fix (and vice versa)
-7. Glass wine enforcement: exactly 1 by-glass per recommendation
+7. Glass wine enforcement: position 1 (classic mode) MUST be by-glass — changed from "exactly 1" to "first must be glass"
 
 ## Deployment
 
@@ -130,6 +147,11 @@ EOF
 | `client/src/components/guest/DishSelector.tsx` | AI dish selection |
 | `client/src/components/guest/GuestHome.tsx` | Guest landing (2×2 grid) |
 | `client/src/components/SommelierThinking.tsx` | AI loading animation |
+| `client/src/components/waiter/WaiterPanel.tsx` | Waiter panel: search + tip library + AI recommend |
+| `client/src/components/admin/AnalyticsPanel.tsx` | Apple-style analytics dashboard |
+| `client/src/components/guest/RecommendationResult.tsx` | Guest recommendation cards (3 modes + voting) |
+| `client/src/services/analytics.ts` | Fire-and-forget event tracking |
+| `server/src/routes/analytics.ts` | Analytics event ingest + dashboard API |
 
 ## Optimization Roadmap
 
@@ -149,19 +171,24 @@ EOF
 - [x] Request tracing (UUID + sentryEventId)
 
 ### Phase 3: Real-World Validation (current)
-- [ ] Restaurant field testing — collect guest feedback
-- [ ] Usage analytics — which features are guests actually using?
+- [x] Usage analytics — dish/wine detail tracking, AI funnel, Apple-style dashboard
+- [x] AI recommendation UX — three pairing modes, mode labels, result card images
+- [x] Waiter panel — search-first tip library with 149 AI-generated sales tips
+- [ ] Restaurant field testing — collect guest + staff feedback
 - [ ] AI recommendation accuracy — spot-check real recommendations
 - [ ] Performance under load — multiple tables simultaneously
 
-### Phase 4: Product Polish (future)
-- [ ] Recommendation result page UX refresh
+### Phase 4: Product Polish (in progress)
+- [x] Recommendation result cards with images and mode subtitles
+- [ ] FOH staff experience — waiter panel real-world feedback
 - [ ] Skeleton screens for cold-load states
 - [ ] Offline mode hardening (PWA)
 - [ ] Tasting note human review pass
+- [ ] Mobile UX polish
 
 ### Phase 5: Growth (future)
 - [ ] Multi-restaurant support (schema ready, needs UI)
+- [ ] Chinese cuisine pairing knowledge graph
 - [ ] Wine inventory management
 - [ ] Guest preference learning
 - [ ] WeChat Mini Program version

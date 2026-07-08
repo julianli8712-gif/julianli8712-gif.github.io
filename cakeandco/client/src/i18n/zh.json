@@ -1,0 +1,141 @@
+{
+  "brand": {
+    "tagline": "匠心之作，因你而甜",
+    "footerTagline": "匠心之作，因你而甜"
+  },
+  "home": {
+    "grabGo": "即买即取",
+    "grabGoDesc": "今日现货 {{count}} 款",
+    "preOrder": "提前预约",
+    "preOrderDesc": "24h 提前预订 {{count}} 款",
+    "aiStudio": "AI 工坊",
+    "aiStudioDesc": "灵感定制",
+    "sceneTitle": "按场景发现",
+    "todayPick": "今日精选",
+    "chefPick": "主厨推荐",
+    "preOrderShowcase": "提前预约",
+    "viewAll": "查看全部",
+    "aiEntryTitle": "AI 灵感工坊",
+    "aiEntryDesc": "描述你梦想中的蛋糕 →"
+  },
+  "grabGo": {
+    "title": "即买即取",
+    "all": "全部",
+    "whole": "整只蛋糕",
+    "mini": "一人小食",
+    "onlyLeft": "仅剩{{n}}件"
+  },
+  "preOrder": {
+    "title": "提前预约",
+    "all": "全部",
+    "leadTime": "提前 {{h}}h",
+    "from": "¥{{p}}起"
+  },
+  "cakeDetail": {
+    "tasteNote": "口感层次",
+    "pairing": "搭配",
+    "size": "尺寸",
+    "stockGrab": "即买即取",
+    "stockPreorder": "提前预约",
+    "inStock": "现货：{{n}} 件",
+    "lowStock": "仅剩 {{n}} 件",
+    "leadTime": "需提前 {{h}} 小时预约",
+    "reserveNow": "立即预留",
+    "reservePre": "预约此款"
+  },
+  "recommend": {
+    "title": "AI 场景推荐",
+    "desc": "选择场景，为您挑选最适合的蛋糕",
+    "loading": "AI 正在为您挑选...",
+    "resultCount": "为您推荐 {{n}} 款",
+    "match": "匹配",
+    "pairing": "搭配"
+  },
+  "reserve": {
+    "title": "确认预约",
+    "name": "姓名",
+    "phone": "手机号",
+    "pickupTime": "取货时间",
+    "message": "祝福语（选填）",
+    "messagePlaceholder": "生日快乐、周年纪念...",
+    "submit": "提交预约",
+    "submitting": "提交中...",
+    "success": "预约已提交，酒店将电话与您确认！",
+    "errorFill": "请填写姓名、手机号和取货时间",
+    "errorSubmit": "预约失败，请重试"
+  },
+  "aiStudio": {
+    "title": "AI 灵感工坊",
+    "desc": "描述你梦想中的蛋糕，AI 为你生成效果图。糕点师根据你的灵感创作独一无二的专属蛋糕。",
+    "comingSoon": "即将上线，敬请期待",
+    "promptPlaceholder": "描述你梦想中的蛋糕...例如：粉色草莓奶油蛋糕，点缀玫瑰花瓣，简约韩式裱花风格",
+    "promptHint": "尽情描述，AI 会理解你的想法（200字以内）",
+    "btnGenerate": "生成效果图",
+    "btnRegenerate": "重新生成",
+    "btnUseThis": "用此设计预约",
+    "selectHint": "请先选择一张效果图",
+    "loading1": "正在构思蛋糕设计...",
+    "loading2": "糕点师收到了你的灵感...",
+    "loading3": "马上完成，效果图即将呈现...",
+    "errorRateLimit": "太频繁了，请稍后再试",
+    "errorGeneration": "AI 暂时无法生成，请重试"
+  },
+  "occasions": {
+    "生日": "生日",
+    "纪念日": "纪念日",
+    "下午茶": "下午茶",
+    "商务": "商务",
+    "儿童": "儿童",
+    "节日": "节日",
+    "长辈": "长辈",
+    "健康无负担": "健康无负担",
+    "一人食": "一人食"
+  },
+  "categories": {
+    "whole_mousse": "慕斯蛋糕",
+    "whole_cheese": "芝士蛋糕",
+    "whole_cream": "奶油蛋糕",
+    "whole_chocolate": "巧克力蛋糕",
+    "mini_slice": "切片",
+    "mini_tart": "挞类",
+    "mini_mousse": "慕斯杯",
+    "mini_cheese": "芝士",
+    "mini_cream": "奶油杯"
+  },
+  "sceneDescs": {
+    "生日": "经典庆祝之选",
+    "纪念日": "浪漫甜蜜时刻",
+    "下午茶": "精致午后时光",
+    "商务": "低调不失品味",
+    "儿童": "缤纷童趣派对",
+    "节日": "欢聚温馨时刻",
+    "长辈": "经典温暖心意",
+    "健康无负担": "低糖轻卡放心享"
+  },
+  "footer": {
+    "brand": "CAKE & CO",
+    "subbrand": "汀 · 作"
+  },
+  "status": {
+    "PENDING": "待确认",
+    "PENDING_AI": "AI 定制待审核",
+    "CONFIRMED": "已确认",
+    "MAKING": "制作中",
+    "READY": "待取货",
+    "COMPLETED": "已完成",
+    "CANCELLED": "已取消"
+  },
+  "order": {
+    "lookup": "查询订单",
+    "title": "查询订单",
+    "phonePlaceholder": "请输入11位手机号码",
+    "search": "查询",
+    "empty": "未找到该手机号的订单",
+    "pickup": "取货",
+    "detail": "订单详情",
+    "status": "订单状态",
+    "viewMyOrders": "查看我的订单",
+    "queryHint": "您可通过手机号查询订单状态",
+    "backHome": "返回首页"
+  }
+}

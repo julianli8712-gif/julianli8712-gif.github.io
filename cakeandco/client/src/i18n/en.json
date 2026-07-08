@@ -1,0 +1,141 @@
+{
+  "brand": {
+    "tagline": "Crafted for Celebration",
+    "footerTagline": "Crafted for your sweet moments"
+  },
+  "home": {
+    "grabGo": "Grab & Go",
+    "grabGoDesc": "{{count}} items today",
+    "preOrder": "Pre-Order",
+    "preOrderDesc": "{{count}} items · 24h advance",
+    "aiStudio": "AI Studio",
+    "aiStudioDesc": "Custom Design",
+    "sceneTitle": "Shop by Occasion",
+    "todayPick": "Today's Picks",
+    "chefPick": "Chef's Picks",
+    "preOrderShowcase": "Pre-Order",
+    "viewAll": "View All",
+    "aiEntryTitle": "AI Design Studio",
+    "aiEntryDesc": "Describe your dream cake →"
+  },
+  "grabGo": {
+    "title": "Grab & Go",
+    "all": "All",
+    "whole": "Whole Cakes",
+    "mini": "Individual",
+    "onlyLeft": "Only {{n}} left"
+  },
+  "preOrder": {
+    "title": "Pre-Order",
+    "all": "All",
+    "leadTime": "{{h}}h advance",
+    "from": "From ¥{{p}}"
+  },
+  "cakeDetail": {
+    "tasteNote": "Tasting Notes",
+    "pairing": "Pairs with",
+    "size": "Size",
+    "stockGrab": "Grab & Go",
+    "stockPreorder": "Pre-Order",
+    "inStock": "In stock: {{n}}",
+    "lowStock": "Only {{n}} left",
+    "leadTime": "{{h}} hours advance order",
+    "reserveNow": "Reserve Now",
+    "reservePre": "Pre-Order"
+  },
+  "recommend": {
+    "title": "AI Recommendations",
+    "desc": "Choose an occasion, let AI pick the perfect cake",
+    "loading": "AI is selecting for you...",
+    "resultCount": "{{n}} recommendations",
+    "match": "Match",
+    "pairing": "Pairs with"
+  },
+  "reserve": {
+    "title": "Confirm Reservation",
+    "name": "Name",
+    "phone": "Phone",
+    "pickupTime": "Pickup Time",
+    "message": "Message (optional)",
+    "messagePlaceholder": "Happy Birthday, Anniversary...",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "success": "Reservation submitted. The hotel will call to confirm!",
+    "errorFill": "Please fill in all required fields",
+    "errorSubmit": "Failed to submit. Please try again."
+  },
+  "aiStudio": {
+    "title": "AI Design Studio",
+    "desc": "Describe your dream cake. AI generates a preview. Our pastry chef brings your vision to life.",
+    "comingSoon": "Coming Soon",
+    "promptPlaceholder": "Describe your dream cake... e.g. A pink strawberry cream cake with rose petals, minimalist Korean-style piping",
+    "promptHint": "Describe freely, AI will understand (max 200 chars)",
+    "btnGenerate": "Generate Design",
+    "btnRegenerate": "Try Again",
+    "btnUseThis": "Order This Design",
+    "selectHint": "Please select a design first",
+    "loading1": "Sketching your cake design...",
+    "loading2": "The pastry chef received your inspiration...",
+    "loading3": "Almost done, preview coming up...",
+    "errorRateLimit": "Too many requests. Please try again later.",
+    "errorGeneration": "AI is currently unavailable. Please try again."
+  },
+  "occasions": {
+    "生日": "Birthday",
+    "纪念日": "Anniversary",
+    "下午茶": "Afternoon Tea",
+    "商务": "Business",
+    "儿童": "Kids",
+    "节日": "Festival",
+    "长辈": "Elders",
+    "健康无负担": "Guilt-Free",
+    "一人食": "Solo"
+  },
+  "categories": {
+    "whole_mousse": "Mousse Cakes",
+    "whole_cheese": "Cheesecakes",
+    "whole_cream": "Cream Cakes",
+    "whole_chocolate": "Chocolate Cakes",
+    "mini_slice": "Slices",
+    "mini_tart": "Tarts",
+    "mini_mousse": "Mousse Cups",
+    "mini_cheese": "Cheese",
+    "mini_cream": "Cream Cups"
+  },
+  "sceneDescs": {
+    "生日": "Classic celebration",
+    "纪念日": "Romantic & sweet",
+    "下午茶": "Elegant afternoon",
+    "商务": "Understated luxury",
+    "儿童": "Colorful party fun",
+    "节日": "Festive & cozy",
+    "长辈": "Timeless warmth",
+    "健康无负担": "Light & guilt-free"
+  },
+  "footer": {
+    "brand": "CAKE & CO",
+    "subbrand": "TING · ZUO"
+  },
+  "status": {
+    "PENDING": "Pending",
+    "PENDING_AI": "AI · Pending Review",
+    "CONFIRMED": "Confirmed",
+    "MAKING": "In Production",
+    "READY": "Ready for Pickup",
+    "COMPLETED": "Completed",
+    "CANCELLED": "Cancelled"
+  },
+  "order": {
+    "lookup": "Orders",
+    "title": "My Orders",
+    "phonePlaceholder": "Enter 11-digit phone number",
+    "search": "Search",
+    "empty": "No orders found for this number",
+    "pickup": "Pickup",
+    "detail": "Order Details",
+    "status": "Order Status",
+    "viewMyOrders": "View My Orders",
+    "queryHint": "You can check your order status using your phone number",
+    "backHome": "Back to Home"
+  }
+}

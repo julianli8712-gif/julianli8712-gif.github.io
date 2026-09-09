@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cake &amp; Co. 汀·作 — 品牌视觉系统</title>
+<style>
+  :root {
+    --cream: #FFF9F0;
+    --cocoa: #3C2415;
+    --gold: #C8A45C;
+    --bg: #F5F0E8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Noto Sans SC", sans-serif;
+    background: var(--bg); color: var(--cocoa);
+    padding: 36px 20px;
+  }
+
+  .page { max-width: 780px; margin: 0 auto; }
+
+  .section {
+    background: white; border-radius: 16px;
+    padding: 44px 48px; margin-bottom: 24px;
+    box-shadow: 0 2px 12px rgba(60,36,21,0.05);
+  }
+  .section h2 { font-size: 19px; margin-bottom: 4px; }
+  .section .sub { font-size: 13px; color: #8B7355; margin-bottom: 28px; }
+
+  .show {
+    display: flex; gap: 28px; align-items: flex-start; justify-content: center;
+    flex-wrap: wrap; padding: 8px 0;
+  }
+  .show .entry {
+    text-align: center; padding: 16px 20px; border-radius: 12px;
+    max-width: 260px;
+  }
+  .show .entry img {
+    border-radius: 10px; box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+    width: 100%; height: auto; display: block;
+  }
+  .show .entry .tag {
+    font-size: 11px; color: #8B7355; margin-top: 12px;
+    letter-spacing: 0.06em;
+  }
+
+  .svg-show {
+    display: flex; gap: 32px; align-items: center; justify-content: center;
+    flex-wrap: wrap; padding: 8px 0;
+  }
+  .svg-show .entry {
+    text-align: center; padding: 16px 24px; border-radius: 12px;
+  }
+  .svg-show .entry .tag {
+    font-size: 11px; color: #8B7355; margin-top: 10px;
+  }
+
+  .grid { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 8px; }
+  .grid .cell {
+    flex: 1; min-width: 140px; border-radius: 12px;
+    padding: 24px 14px; text-align: center; font-size: 12px;
+  }
+  .cell-dark { background: var(--cocoa); color: #B8A080; }
+  .cell-light { background: var(--cream); color: #8B7355; }
+  .cell-white { background: white; color: #8B7355; border: 1px solid #E8E0D4; }
+
+  .note {
+    background: #FFF9F0; border-left: 3px solid var(--gold);
+    padding: 12px 16px; margin-top: 20px; font-size: 13px;
+    border-radius: 0 8px 8px 0; line-height: 1.7;
+  }
+
+  .badge {
+    display: inline-block; padding: 1px 8px; border-radius: 10px;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.05em;
+    margin-left: 6px; vertical-align: 2px;
+  }
+  .badge-ai { background: #F3E5F5; color: #7B1FA2; }
+  .badge-svg { background: #E8F5E9; color: #388E3C; }
+
+  footer {
+    text-align: center; color: #8B7355; font-size: 13px;
+    margin: 36px 0 20px; line-height: 1.8;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ═══════════ AI-Generated Brand Vision ═══════════ -->
+  <div class="section" style="border: 2px solid #C8A45C;">
+    <h2>品牌视觉概念 <span class="badge badge-ai">AI 生成</span></h2>
+    <p class="sub">Qwen-Image-2.0 生成的品牌视觉概念，金箔烫印质感。</p>
+
+    <!-- Row 1: Supersymbol + Wax Seal + App Icon -->
+    <div class="show">
+      <div class="entry">
+        <img src="/img/cakeandco-supersymbol.jpg" alt="超级符号：纯金圆点">
+        <div class="tag">超级符号 · 纯金圆点</div>
+      </div>
+      <div class="entry">
+        <img src="/img/cakeandco-waxseal.jpg" alt="火漆印章">
+        <div class="tag">火漆印章 · 三层同心圆</div>
+      </div>
+      <div class="entry">
+        <img src="/img/cakeandco-appicon.jpg" alt="App Icon">
+        <div class="tag">App Icon · 深棕底 + 金点</div>
+      </div>
+    </div>
+
+    <!-- Row 2: Box SVG mockup -->
+    <div class="show">
+      <div class="entry" style="max-width:440px;">
+        <svg width="400" height="340" viewBox="0 0 400 340" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="gfBox" cx="40%" cy="35%"><stop offset="0%" stop-color="#E8D080"/><stop offset="40%" stop-color="#C8A45C"/><stop offset="100%" stop-color="#A07830"/></radialGradient>
+          </defs>
+          <!-- Shadow -->
+          <rect x="44" y="24" width="312" height="252" rx="8" fill="#3C2415" opacity="0.08"/>
+          <!-- Box body -->
+          <rect x="36" y="16" width="312" height="252" rx="6" fill="#FFF9F0" stroke="#E8DDD0" stroke-width="1"/>
+          <!-- Box lid -->
+          <rect x="36" y="16" width="312" height="48" rx="6" fill="#FBF5EC" stroke="#E8DDD0" stroke-width="1"/>
+          <line x1="36" y1="64" x2="348" y2="64" stroke="#E8DDD0" stroke-width="0.5"/>
+          <!-- Ribbon vertical -->
+          <rect x="185" y="0" width="22" height="284" rx="3" fill="#F2E6D0" opacity="0.6"/>
+          <!-- Ribbon horizontal (on lid) -->
+          <rect x="36" y="34" width="312" height="14" rx="3" fill="#F2E6D0" opacity="0.6"/>
+          <!-- Ribbon bow -->
+          <ellipse cx="196" cy="18" rx="22" ry="14" fill="#F2E6D0" stroke="#E8DDD0" stroke-width="0.5"/>
+          <ellipse cx="180" cy="12" rx="14" ry="10" fill="#F2E6D0" stroke="#E8DDD0" stroke-width="0.5"/>
+          <ellipse cx="212" cy="12" rx="14" ry="10" fill="#F2E6D0" stroke="#E8DDD0" stroke-width="0.5"/>
+          <circle cx="196" cy="10" r="6" fill="#F2E6D0" stroke="#E8DDD0" stroke-width="0.5"/>
+          <!-- Ribbon tails -->
+          <path d="M185,30 Q170,50 160,75" fill="none" stroke="#E8DDD0" stroke-width="6" stroke-linecap="round"/>
+          <path d="M207,30 Q222,50 232,75" fill="none" stroke="#E8DDD0" stroke-width="6" stroke-linecap="round"/>
+
+          <!-- Logo on box lid -->
+          <g transform="translate(74,86)">
+            <!-- Gold dot icon -->
+            <circle cx="14" cy="12" r="10" fill="#C8A45C" opacity="0.12"/>
+            <circle cx="14" cy="12" r="5"  fill="url(#gfBox)"/>
+            <!-- Text -->
+            <text x="34" y="17" font-family="Georgia,serif" font-size="15" fill="#3C2415" letter-spacing="2">CAKE &amp; CO</text>
+            <circle cx="148" cy="13" r="3" fill="url(#gfBox)"/>
+            <!-- Chinese -->
+            <text x="36" y="36" font-family="'Noto Serif SC','STSong',serif" font-size="13" fill="#3C2415" letter-spacing="3">汀</text>
+            <circle cx="60" cy="33" r="3" fill="url(#gfBox)"/>
+            <text x="68" y="36" font-family="'Noto Serif SC','STSong',serif" font-size="13" fill="#3C2415" letter-spacing="3">作</text>
+          </g>
+        </svg>
+        <div class="tag">礼盒效果 · 暖奶油纸 + 缎带 + 烫金圆点</div>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>关于金箔烫印：</strong>「CAKE &amp; CO」后面的「.」和「汀·作」中间的「·」使用金箔烫印工艺。字母 O 为正常印刷字体。烫金仅用于 Logo、火漆印章、礼盒封印等高感知触点，包装纸和大面积物料使用 SVG 印刷版圆点阵以控制成本。
+    </div>
+  </div>
+
+  <!-- ═══════════ SVG Production Files ═══════════ -->
+  <div class="section">
+    <h2>矢量定稿 <span class="badge badge-svg">SVG 生产用</span></h2>
+    <p class="sub">可无限缩放，用于网站、PWA、印刷品。O 为印刷字体，· 为金色圆点。</p>
+
+    <div class="svg-show">
+      <div class="entry">
+        <svg width="280" height="72" viewBox="0 0 300 72">
+          <defs>
+            <radialGradient id="gf1" cx="40%" cy="35%"><stop offset="0%" stop-color="#E8D080"/><stop offset="40%" stop-color="#C8A45C"/><stop offset="100%" stop-color="#A07830"/></radialGradient>
+          </defs>
+          <circle cx="24" cy="36" r="16" fill="#C8A45C" opacity="0.10"/>
+          <circle cx="24" cy="36" r="8"  fill="url(#gf1)"/>
+          <text x="54" y="36" font-family="Georgia,serif" font-size="22" fill="#3C2415" letter-spacing="3">CAKE &amp; CO</text>
+          <circle cx="200" cy="32" r="4" fill="url(#gf1)"/>
+          <text x="56" y="61" font-family="'Noto Serif SC',serif" font-size="18" fill="#3C2415" letter-spacing="4">汀</text>
+          <circle cx="90" cy="57" r="4" fill="url(#gf1)"/>
+          <text x="102" y="61" font-family="'Noto Serif SC',serif" font-size="18" fill="#3C2415" letter-spacing="4">作</text>
+        </svg>
+        <div class="tag">横式 · 网站 Header</div>
+      </div>
+
+      <div class="entry">
+        <svg width="140" height="160" viewBox="0 0 150 160">
+          <defs>
+            <radialGradient id="gf2" cx="40%" cy="35%"><stop offset="0%" stop-color="#E8D080"/><stop offset="40%" stop-color="#C8A45C"/><stop offset="100%" stop-color="#A07830"/></radialGradient>
+          </defs>
+          <circle cx="75" cy="22" r="18" fill="#C8A45C" opacity="0.10"/>
+          <circle cx="75" cy="22" r="9"  fill="url(#gf2)"/>
+          <text x="75" y="70" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#3C2415" letter-spacing="2">CAKE &amp; CO</text>
+          <circle cx="75" cy="82" r="2.5" fill="url(#gf2)"/>
+          <text x="75" y="118" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="20" fill="#3C2415" letter-spacing="6">汀</text>
+          <circle cx="75" cy="128" r="4.5" fill="url(#gf2)"/>
+          <text x="75" y="152" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="20" fill="#3C2415" letter-spacing="6">作</text>
+        </svg>
+        <div class="tag">竖式 · 包装侧面</div>
+      </div>
+
+      <div class="entry">
+        <svg width="180" height="52" viewBox="0 0 200 52">
+          <defs>
+            <radialGradient id="gf3" cx="40%" cy="35%"><stop offset="0%" stop-color="#E8D080"/><stop offset="40%" stop-color="#C8A45C"/><stop offset="100%" stop-color="#A07830"/></radialGradient>
+          </defs>
+          <circle cx="16" cy="26" r="7" fill="url(#gf3)"/>
+          <text x="34" y="30" font-family="Georgia,serif" font-size="18" fill="#3C2415" letter-spacing="3">CAKE &amp; CO</text>
+          <circle cx="166" cy="27" r="3.5" fill="url(#gf3)"/>
+        </svg>
+        <div class="tag">极简横式 · 纸袋 / 杯套</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ Dot Pattern ═══════════ -->
+  <div class="section">
+    <h2>圆点阵 Monogram <span class="badge badge-svg">印刷用</span></h2>
+    <p class="sub">金点满铺印刷，不加烫金工艺。适合包装纸、礼盒内衬。AI 生成概念图 + SVG 矢量。</p>
+
+    <div class="show">
+      <div class="entry">
+        <img src="/img/cakeandco-04-dotpattern.jpg" alt="圆点阵 AI 概念">
+        <div class="tag">AI 概念 · 圆点阵质感</div>
+      </div>
+      <div class="entry">
+        <svg width="200" height="200" viewBox="0 0 180 180">
+          <rect width="180" height="180" fill="#FFF9F0"/>
+          <g fill="#C8A45C" opacity="0.10">
+            <circle cx="10" cy="10" r="7"/><circle cx="45" cy="10" r="7"/><circle cx="80" cy="10" r="7"/>
+            <circle cx="115" cy="10" r="7"/><circle cx="150" cy="10" r="7"/>
+            <circle cx="27" cy="40" r="7"/><circle cx="62" cy="40" r="7"/><circle cx="97" cy="40" r="7"/>
+            <circle cx="132" cy="40" r="7"/><circle cx="167" cy="40" r="7"/>
+            <circle cx="10" cy="70" r="7"/><circle cx="45" cy="70" r="7"/><circle cx="80" cy="70" r="7"/>
+            <circle cx="115" cy="70" r="7"/><circle cx="150" cy="70" r="7"/>
+            <circle cx="27" cy="100" r="7"/><circle cx="62" cy="100" r="7"/><circle cx="97" cy="100" r="7"/>
+            <circle cx="132" cy="100" r="7"/><circle cx="167" cy="100" r="7"/>
+            <circle cx="10" cy="130" r="7"/><circle cx="45" cy="130" r="7"/><circle cx="80" cy="130" r="7"/>
+            <circle cx="115" cy="130" r="7"/><circle cx="150" cy="130" r="7"/>
+            <circle cx="27" cy="160" r="7"/><circle cx="62" cy="160" r="7"/><circle cx="97" cy="160" r="7"/>
+            <circle cx="132" cy="160" r="7"/><circle cx="167" cy="160" r="7"/>
+          </g>
+          <circle cx="45" cy="10" r="7" fill="#C8A45C" opacity="0.6"/>
+          <circle cx="115" cy="40" r="7" fill="#C8A45C" opacity="0.6"/>
+          <circle cx="80" cy="70" r="7" fill="#C8A45C" opacity="0.6"/>
+          <circle cx="150" cy="100" r="7" fill="#C8A45C" opacity="0.6"/>
+          <circle cx="27" cy="130" r="7" fill="#C8A45C" opacity="0.6"/>
+          <circle cx="97" cy="160" r="7" fill="#C8A45C" opacity="0.6"/>
+        </svg>
+        <div class="tag">SVG 矢量 · 印刷文件</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ Summary ═══════════ -->
+  <div class="section">
+    <h2>品牌视觉规范</h2>
+    <div class="grid">
+      <div class="cell cell-white">
+        <div style="font-weight:600;">品牌符号</div>
+        <div style="margin-top:4px;">金色圆点 #C8A45C</div>
+      </div>
+      <div class="cell cell-light">
+        <div style="font-weight:600;">英文标准字</div>
+        <div style="margin-top:4px;">Georgia · #3C2415</div>
+      </div>
+      <div class="cell cell-light">
+        <div style="font-weight:600;">中文标准字</div>
+        <div style="margin-top:4px;">宋体/Noto Serif SC · #3C2415</div>
+      </div>
+      <div class="cell cell-dark">
+        <div style="font-weight:600;">金点规则</div>
+        <div style="margin-top:4px;">CAKE & CO· 和 汀·作 的「·」= 烫金</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Cake &amp; Co. 汀·作 · 品牌视觉系统 v2.0<br>
+  AI 概念：Qwen-Image-2.0 · 矢量定稿：SVG · 配色：可可金 + 深可可 + 暖奶油
+</footer>
+
+</body>
+</html>

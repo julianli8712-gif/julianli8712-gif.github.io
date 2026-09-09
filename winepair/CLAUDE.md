@@ -91,10 +91,10 @@ EOF
 ## Operational Safeguards (2026-05-28)
 
 ### Database Backup
-- **Script**: `server/scripts/backup-export.ts` — exports all 9 tables as JSON
+- **Script**: `server/scripts/backup-export.ts` — exports all 10 tables as JSON (incl. `analyticsEvents`)
 - **Cron**: daily at 4am, cleanup at 5am (keep 7 days)
 - **Location**: `/opt/winepair/backups/backup-YYYY-MM-DDTHH-mm-ss/`
-- **Known issue**: `__dirname` in ESM resolves to `src/` path; redirect manually if needed
+- **Fixed (2026-07-14)**: was writing to `server/src/backups/` because tsx/ESM shims `__dirname` under `src/`. Now anchors to `process.cwd()` (`../backups`), with optional `BACKUP_DIR` override. Backups land outside `server/` and align with the cleanup cron.
 
 ### Error Monitoring (Sentry)
 - **DSN**: `https://529b7240f...@o4511467232428032.ingest.us.sentry.io/4511467263229952`

@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cake & Co. 汀·作 — 全方位策划书</title>
+<style>
+  :root {
+    --cream: #FFF9F0;
+    --cocoa: #3C2415;
+    --gold: #C8A45C;
+    --gold-light: #E8D5A3;
+    --warm-white: #FFFDF9;
+    --warm-gray: #F5F0E8;
+    --text: #2D2D2D;
+    --text-light: #6B5E53;
+    --green: #5B8C5A;
+    --blue: #5A7D8C;
+    --red: #C45C5C;
+    --border: #E0D8CC;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    color: var(--text);
+    background: #F8F5F0;
+    line-height: 1.8;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== PAGE ===== */
+  .page {
+    background: white;
+    max-width: 820px;
+    margin: 24px auto;
+    padding: 64px 72px;
+    box-shadow: 0 2px 24px rgba(60,36,21,0.08);
+    page-break-after: always;
+  }
+  .page.cover {
+    background: linear-gradient(160deg, #FFF9F0 0%, #FFFDF9 40%, #F5F0E8 100%);
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    text-align: center;
+    padding: 80px 72px;
+  }
+  .page.no-break { page-break-after: avoid; }
+
+  /* ===== TYPOGRAPHY ===== */
+  h1 {
+    font-size: 42px; font-weight: 300; letter-spacing: 0.04em;
+    color: var(--cocoa); margin-bottom: 12px;
+    font-family: "Georgia", "Noto Serif SC", "STSong", serif;
+  }
+  h1 .en { font-size: 28px; letter-spacing: 0.08em; display: block; color: var(--gold); margin-bottom: 8px; }
+  h1 .cn { display: block; }
+
+  h2 {
+    font-size: 24px; font-weight: 600; color: var(--cocoa);
+    margin: 48px 0 20px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--gold-light);
+  }
+  h2:first-of-type { margin-top: 0; }
+
+  h3 {
+    font-size: 18px; font-weight: 600; color: var(--cocoa);
+    margin: 32px 0 12px;
+  }
+
+  h4 {
+    font-size: 15px; font-weight: 600; color: var(--text);
+    margin: 20px 0 8px;
+  }
+
+  p { margin-bottom: 12px; color: var(--text); }
+  p.lead { font-size: 18px; color: var(--text-light); line-height: 1.9; }
+
+  /* ===== COVER ===== */
+  .cover .logo {
+    font-family: "Georgia", "Noto Serif SC", serif;
+    font-size: 64px; color: var(--cocoa); letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+  .cover .tagline {
+    font-size: 18px; color: var(--gold); letter-spacing: 0.12em;
+    margin-bottom: 48px;
+  }
+  .cover .meta {
+    font-size: 14px; color: var(--text-light);
+    margin-top: 48px; line-height: 2;
+  }
+  .cover .divider {
+    width: 60px; height: 2px; background: var(--gold);
+    margin: 24px auto;
+  }
+
+  /* ===== TABLES ===== */
+  table {
+    width: 100%; border-collapse: collapse;
+    margin: 16px 0 24px; font-size: 13.5px;
+  }
+  thead th {
+    background: var(--cocoa); color: white;
+    padding: 10px 14px; text-align: left; font-weight: 500;
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  tbody td {
+    padding: 10px 14px; border-bottom: 1px solid var(--border);
+  }
+  tbody tr:nth-child(even) { background: var(--warm-white); }
+  tbody tr:hover { background: #FFF7EB; }
+
+  /* ===== CARDS ===== */
+  .card-row {
+    display: flex; gap: 16px; margin: 20px 0;
+    flex-wrap: wrap;
+  }
+  .card {
+    flex: 1; min-width: 200px;
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+  }
+  .card h4 { margin-top: 0; color: var(--cocoa); }
+  .card .icon { font-size: 28px; margin-bottom: 8px; }
+  .card .num { font-size: 32px; font-weight: 700; color: var(--gold); }
+
+  /* ===== HIGHLIGHT BOXES ===== */
+  .highlight {
+    background: linear-gradient(135deg, #FFF9F0, #FFF3E0);
+    border-left: 4px solid var(--gold);
+    padding: 20px 24px; margin: 20px 0; border-radius: 0 8px 8px 0;
+  }
+  .highlight strong { color: var(--cocoa); }
+
+  .insight {
+    background: #F0F7F4; border-left: 4px solid var(--green);
+    padding: 20px 24px; margin: 20px 0; border-radius: 0 8px 8px 0;
+  }
+
+  .warning {
+    background: #FFF5F5; border-left: 4px solid var(--red);
+    padding: 20px 24px; margin: 20px 0; border-radius: 0 8px 8px 0;
+  }
+
+  /* ===== DIAGRAMS ===== */
+  .diagram {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 32px;
+    margin: 20px 0;
+    font-family: "SF Mono", "Menlo", "Consolas", monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre;
+    overflow-x: auto;
+    color: var(--text-light);
+  }
+
+  .flow {
+    display: flex; align-items: center; justify-content: center;
+    gap: 12px; margin: 24px 0; flex-wrap: wrap;
+    font-size: 13px;
+  }
+  .flow .step {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 18px;
+    text-align: center;
+    min-width: 80px;
+  }
+  .flow .step.active { border-color: var(--gold); background: #FFF9F0; }
+  .flow .arrow { color: var(--gold); font-size: 18px; }
+
+  .funnel {
+    max-width: 500px; margin: 20px auto;
+  }
+  .funnel .layer {
+    margin: 0 auto 4px; text-align: center;
+    padding: 10px; color: white; border-radius: 4px;
+  }
+
+  /* ===== PACKAGING VISUAL ===== */
+  .pkg-box {
+    border: 3px solid var(--cocoa);
+    border-radius: 12px; padding: 36px 28px 28px;
+    margin: 24px 0; position: relative;
+    background: #FFFDF9;
+    max-width: 400px;
+  }
+  .pkg-box .ribbon {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--gold); color: white;
+    padding: 6px 32px; border-radius: 20px;
+    font-size: 12px; letter-spacing: 0.08em; font-weight: 600;
+  }
+  .pkg-box .pkg-logo { text-align: center; font-size: 24px; color: var(--cocoa); margin-bottom: 16px; font-family: Georgia, serif; }
+  .pkg-box .pkg-side { display: flex; gap: 16px; }
+  .pkg-box .pkg-left, .pkg-box .pkg-right { flex: 1; font-size: 11px; color: var(--text-light); line-height: 1.6; }
+  .pkg-box .pkg-bottom { border-top: 1px dashed var(--border); margin-top: 16px; padding-top: 12px; text-align: center; font-size: 11px; color: var(--gold); }
+
+  /* ===== TIMELINE ===== */
+  .timeline { margin: 24px 0; }
+  .timeline .phase {
+    display: flex; gap: 16px; margin-bottom: 20px;
+  }
+  .timeline .phase-num {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--gold); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 18px; flex-shrink: 0;
+  }
+  .timeline .phase-content {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px 20px; flex: 1;
+  }
+  .timeline .phase-content h4 { margin-top: 0; }
+
+  /* ===== STATS ROW ===== */
+  .stats { display: flex; gap: 16px; margin: 20px 0; flex-wrap: wrap; }
+  .stat {
+    flex: 1; min-width: 160px;
+    text-align: center;
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 8px; padding: 20px 16px;
+  }
+  .stat .num { font-size: 36px; font-weight: 700; color: var(--cocoa); }
+  .stat .label { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+
+  /* ===== SWOT ===== */
+  .swot {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    margin: 20px 0;
+  }
+  .swot .cell {
+    padding: 20px; border-radius: 8px;
+  }
+  .swot .s { background: #F0F7F4; }
+  .swot .w { background: #FFF5F5; }
+  .swot .o { background: #F0F4F7; }
+  .swot .t { background: #FFF8F0; }
+  .swot .cell h4 { margin-top: 0; }
+  .swot .cell ul { margin: 0; padding-left: 18px; font-size: 13px; }
+
+  /* ===== PRINT ===== */
+  @media print {
+    body { background: white; }
+    .page {
+      box-shadow: none; margin: 0; padding: 48px 56px;
+      max-width: none; page-break-after: always;
+    }
+    .page.cover { min-height: 100vh; }
+    @page { size: A4; margin: 0; }
+  }
+
+  /* ===== MISC ===== */
+  .section-toc { margin: 20px 0; }
+  .section-toc a { color: var(--cocoa); text-decoration: none; display: block; padding: 6px 0; border-bottom: 1px dotted var(--border); }
+  .section-toc a:hover { color: var(--gold); }
+
+  .badge {
+    display: inline-block; padding: 2px 10px; border-radius: 12px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+  }
+  .badge-green { background: #E8F5E9; color: #388E3C; }
+  .badge-blue { background: #E3F2FD; color: #1976D2; }
+  .badge-gold { background: #FFF8E1; color: #F57F17; }
+  .badge-purple { background: #F3E5F5; color: #7B1FA2; }
+
+  .page-break { page-break-before: always; }
+
+  .tag {
+    display: inline-block; background: var(--warm-white);
+    border: 1px solid var(--border);
+    padding: 3px 10px; border-radius: 14px;
+    font-size: 12px; margin: 2px 4px;
+  }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ COVER ═══════════════ -->
+<div class="page cover">
+  <div class="logo">Cake &amp; Co.</div>
+  <div style="font-size:36px;color:var(--cocoa);font-family:'Noto Serif SC',serif;">汀·作</div>
+  <div class="divider"></div>
+  <div class="tagline">匠 心 之 作 · 因 你 而 甜</div>
+  <p class="lead" style="max-width:540px;margin:32px auto;">
+    五星酒店饼房的独立品牌化战略<br>
+    —— 从配套设施到目的地品牌
+  </p>
+  <div class="meta">
+    全方位策划书 v1.0<br>
+    2026 年 6 月<br>
+    机密文件 · 仅供内部讨论
+  </div>
+</div>
+
+<!-- ═══════════════ TOC ═══════════════ -->
+<div class="page" style="page-break-after:always;">
+  <h2>目录</h2>
+  <div class="section-toc" style="font-size:14px;">
+    <a href="#s1" style="font-weight:600;">一、品牌战略</a>
+    <a href="#s1" style="padding-left:16px;">1.1 品牌身份 · 1.2 品牌架构 · 1.3 视觉方向</a>
+    <a href="#s1" style="padding-left:16px;color:var(--gold);">1.4 包装即媒体 ★ 核心战略</a>
+    <a href="#s2" style="font-weight:600;margin-top:4px;">二、市场与竞争</a>
+    <a href="#s3" style="font-weight:600;">三、产品体系</a>
+    <a href="#s4" style="font-weight:600;">四、AI 技术战略</a>
+    <a href="#s5" style="font-weight:600;">五、用户体验设计</a>
+    <a href="#s6" style="font-weight:600;">六、运营体系</a>
+    <a href="#s7" style="font-weight:600;">七、推广与增长</a>
+    <a href="#s8" style="font-weight:600;">八、技术架构</a>
+    <a href="#s9" style="font-weight:600;">九、数据与指标</a>
+    <a href="#s10" style="font-weight:600;">十、分阶段路线图</a>
+    <a href="#s11" style="font-weight:600;">十一、风险评估</a>
+    <a href="#s12" style="font-weight:600;">十二、长期愿景</a>
+  </div>
+</div>
+
+<!-- ═══════════════ 一、品牌战略 ═══════════════ -->
+<div class="page" id="s1">
+  <h2>一、品牌战略</h2>
+
+  <h3>1.1 品牌身份</h3>
+  <table>
+    <thead><tr><th style="width:25%">要素</th><th>定义</th></tr></thead>
+    <tbody>
+      <tr><td><strong>品牌名</strong></td><td>Cake &amp; Co. 汀·作</td></tr>
+      <tr><td><strong>品牌定位</strong></td><td>五星饼房出品的现代精品甜点品牌</td></tr>
+      <tr><td><strong>核心主张</strong></td><td>"匠心之作，因你而甜"</td></tr>
+      <tr><td><strong>品牌人格</strong></td><td>温暖匠人 × 现代审美 × 可信赖的品质</td></tr>
+      <tr><td><strong>目标受众</strong></td><td>酒店住客（即时触达）+ 本地高端消费者（复购池）+ 企业客户（宴会/礼品）</td></tr>
+    </tbody>
+  </table>
+
+  <h3>1.2 品牌架构</h3>
+  <div class="card-row">
+    <div class="card"><div class="icon">🟢</div><h4>日常精品</h4><p style="font-size:13px;color:var(--text-light);">Everyday Delights<br>即买即取 · ~15 款</p></div>
+    <div class="card"><div class="icon">🔵</div><h4>庆祝定制</h4><p style="font-size:13px;color:var(--text-light);">Celebration<br>提前预约 · ~20 款</p></div>
+    <div class="card"><div class="icon">✨</div><h4>季节限定</h4><p style="font-size:13px;color:var(--text-light);">Seasonal<br>限时限量 · ~5 款轮换</p></div>
+    <div class="card"><div class="icon">🔮</div><h4>AI 灵感工坊</h4><p style="font-size:13px;color:var(--text-light);">AI Studio<br>AI 图片生成定制</p></div>
+  </div>
+
+  <div class="highlight">
+    <strong>品牌与酒店的关系演进：</strong><br>
+    初期（Phase 1-2）：弱关联，"由五星酒店饼房出品"作为品质背书<br>
+    成长期（Phase 3-4）：独立品牌认知建立，逐步弱化酒店关联<br>
+    长远：可脱离单一酒店，成为独立甜点品牌/IP
+  </div>
+
+  <h3>1.3 品牌视觉方向</h3>
+  <table>
+    <thead><tr><th style="width:20%">元素</th><th>方向</th></tr></thead>
+    <tbody>
+      <tr><td><strong>色彩</strong></td><td>暖奶油色底 + 深可可色字 + 一抹金 — 温暖不厚重，精致不高冷</td></tr>
+      <tr><td><strong>字体</strong></td><td>中文：衬线体/手写感；英文：现代无衬线 — "汀·作"有手工温度</td></tr>
+      <tr><td><strong>摄影</strong></td><td>自然光、侧光强调层次、切面特写 — 对标国际甜点品牌的视觉品质</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════ 1.4 包装即媒体 ═══════════════ -->
+<div class="page">
+  <h2>1.4 包装即媒体 ★ 核心战略</h2>
+  <p class="lead">蛋糕包装盒不是耗材，而是品牌最便宜、最高频、最可信的户外广告位。</p>
+
+  <div class="flow">
+    <div class="step active">🏨<br>酒店取货</div>
+    <div class="arrow">→</div>
+    <div class="step">📸<br>开箱拍照</div>
+    <div class="arrow">→</div>
+    <div class="step">🚶<br>户外行走</div>
+    <div class="arrow">→</div>
+    <div class="step">👀<br>路人好奇</div>
+    <div class="arrow">→</div>
+    <div class="step">📱<br>扫码了解</div>
+  </div>
+
+  <h4>传播效率对比（月 100 单假设）</h4>
+  <table>
+    <thead><tr><th>传播方式</th><th>单次曝光成本</th><th>月曝光量</th><th>信任度</th></tr></thead>
+    <tbody>
+      <tr><td>小红书投放</td><td>¥0.5–2</td><td>5,000–20,000</td><td>低（广告）</td></tr>
+      <tr><td>朋友圈广告</td><td>¥0.1–0.5</td><td>10,000–50,000</td><td>低（广告）</td></tr>
+      <tr style="background:#FFF9F0;"><td><strong>🟢 品牌包装盒（行人看见）</strong></td><td><strong>¥0</strong></td><td><strong>300–1,000+</strong></td><td><strong>高（真实消费）</strong></td></tr>
+      <tr style="background:#FFF9F0;"><td><strong>🟢 品牌包装盒（社交分享）</strong></td><td><strong>¥0</strong></td><td><strong>500–5,000+</strong></td><td><strong>极高（熟人推荐）</strong></td></tr>
+      <tr style="background:#FFF9F0;"><td><strong>🟢 品牌包装盒（收礼人）</strong></td><td><strong>¥0</strong></td><td><strong>100–300</strong></td><td><strong>最高（亲自体验）</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="highlight">
+    <strong>核心逻辑：</strong>投放广告需要持续花钱。包装做好了一次投入，此后每一单都在为你免费打广告。
+  </div>
+
+  <h4>三档包装体系</h4>
+  <table>
+    <thead><tr><th></th><th>A 档 · 日常袋装</th><th>B 档 · 礼盒装</th><th>C 档 · 臻选礼盒</th></tr></thead>
+    <tbody>
+      <tr><td><strong>产品</strong></td><td>可颂、杯子蛋糕、泡芙</td><td>4–12 寸庆祝蛋糕</td><td>季节限定、AI 定制、送礼</td></tr>
+      <tr><td><strong>材质</strong></td><td>180g 白牛皮纸 + Logo 丝印</td><td>1200g 灰板裱白卡 + 品牌专色</td><td>1500g 灰板裱特种纸 + 烫金</td></tr>
+      <tr><td><strong>特征</strong></td><td>Logo 醒目、手提舒适、挺括</td><td>缎带、品牌故事、底部 QR</td><td>磁吸盖、火漆印章、手写卡</td></tr>
+      <tr><td><strong>成本</strong></td><td>¥2–4/套</td><td>¥8–18/套</td><td>¥25–45/套</td></tr>
+      <tr><td><strong>传播钩子</strong></td><td>拎着走 = 行走广告</td><td>"盒子太美舍不得扔"</td><td>开箱 = 一条小红书视频</td></tr>
+    </tbody>
+  </table>
+
+  <h4>包装上的 6 个传播触点</h4>
+  <div class="pkg-box">
+    <div class="ribbon">🎀 缎带 / 火漆印章</div>
+    <div class="pkg-logo">Cake &amp; Co. 汀·作<br><small style="font-size:12px;color:var(--gold);">"匠心之作，因你而甜"</small></div>
+    <div class="pkg-side">
+      <div class="pkg-left">
+        ✍️ 主厨 ____ 手工制作<br>
+        📷 分享你的 Cake &amp; Co. 时刻<br>
+        <span style="color:var(--gold);">@cakeandco #汀·作</span>
+      </div>
+      <div class="pkg-right">
+        "这款蛋糕的灵感来自<br>____" <span style="font-size:10px;">（蛋糕故事）</span><br>
+        📱 [ QR 码 ]<br>
+        <span style="font-size:10px;">扫码探索更多</span>
+      </div>
+    </div>
+    <div class="pkg-bottom">
+      💝 盒内惊喜："你打开的不仅是一个蛋糕盒，而是一段值得庆祝的时光。"
+    </div>
+  </div>
+
+  <h4>开箱体验的 5 层节奏</h4>
+  <div class="diagram">
+手提袋 → 礼盒（磁吸阻尼感） → 蛋糕露出（贴纸封印）
+  → 配件（独立信封·手写卡·蜡烛套装）
+  → 盒底惊喜文案 + 回购 QR</div>
+
+  <h4>月度包装预算（假设月 100 单）</h4>
+  <table>
+    <thead><tr><th>档位</th><th>月用量</th><th>单价</th><th>月成本</th></tr></thead>
+    <tbody>
+      <tr><td>A 档（日常袋装）</td><td>60 单</td><td>¥3</td><td>¥180</td></tr>
+      <tr><td>B 档（礼盒装）</td><td>30 单</td><td>¥12</td><td>¥360</td></tr>
+      <tr><td>C 档（臻选礼盒）</td><td>10 单</td><td>¥35</td><td>¥350</td></tr>
+      <tr style="font-weight:700;background:#FFF9F0;"><td>合计</td><td>100 单</td><td></td><td>¥890/月</td></tr>
+    </tbody>
+  </table>
+
+  <div class="insight">
+    <strong>每月不到 ¥1,000 的包装投入</strong>，换来 100 个行走的户外广告牌 + 100 次开箱传播机会。<br>
+    这在任何媒体投放渠道都是不可能的价格。
+  </div>
+
+  <div class="highlight" style="text-align:center;font-size:18px;">
+    <strong>别人家的蛋糕盒进垃圾桶。<br>Cake &amp; Co. 的蛋糕盒进朋友圈。</strong>
+  </div>
+</div>
+
+<!-- ═══════════════ 二、市场与竞争 ═══════════════ -->
+<div class="page page-break" id="s2">
+  <h2>二、市场与竞争</h2>
+
+  <h3>2.1 为什么是现在？</h3>
+  <div class="card-row">
+    <div class="card"><div class="num">01</div><h4>结构性空白</h4><p style="font-size:13px;">中国高端酒店饼房几乎都没有独立的数字化品牌</p></div>
+    <div class="card"><div class="num">02</div><h4>消费升级下沉</h4><p style="font-size:13px;">小红书用户渴望高端甜点，但本地供给不足</p></div>
+    <div class="card"><div class="num">03</div><h4>AI 窗口期</h4><p style="font-size:13px;">无竞品将 AI 图片生成用于蛋糕定制，12–18 月先发</p></div>
+    <div class="card"><div class="num">04</div><h4>社交货币化</h4><p style="font-size:13px;">蛋糕天然比任何品类更适合社交媒体传播</p></div>
+  </div>
+
+  <h3>2.2 竞争格局</h3>
+  <table>
+    <thead><tr><th>类型</th><th>代表</th><th>优势</th><th>劣势</th></tr></thead>
+    <tbody>
+      <tr><td>酒店饼房（传统）</td><td>各大五星酒店</td><td>品质背书</td><td>无数字化、无品牌</td></tr>
+      <tr><td>连锁蛋糕店</td><td>好利来、幸福西饼</td><td>品牌知名度</td><td>品质中庸、无 AI</td></tr>
+      <tr><td>私房烘焙</td><td>小红书 KOL</td><td>个性化</td><td>产能有限、不稳定</td></tr>
+      <tr><td>高端甜点</td><td>Lady M、黑天鹅</td><td>强品牌</td><td>非定制、无 AI</td></tr>
+      <tr style="background:#FFF9F0;"><td><strong>Cake &amp; Co.</strong></td><td><strong>（我们）</strong></td><td><strong>五星品质 + AI + 数字化</strong></td><td><strong>品牌从零开始</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="highlight">
+    <strong>竞争定位：</strong>五星品质 × 独立品牌 × AI 个性化 × 数字化体验<br>
+    = <strong>目前市场上没有直接竞品。</strong>
+  </div>
+
+  <h3>2.3 SWOT 分析</h3>
+  <div class="swot">
+    <div class="cell s"><h4>🟢 优势 S</h4><ul><li>五星饼房品质背书</li><li>AI 图片生成定制（先发）</li><li>复用 WinePair 技术栈，成本极低</li><li>独立品牌不受酒店约束</li></ul></div>
+    <div class="cell w"><h4>🔴 劣势 W</h4><ul><li>品牌从零开始，认知度为零</li><li>产能受限于单一饼房</li><li>酒店地理位置固定</li><li>糕点师需适应数字化运营</li></ul></div>
+    <div class="cell o"><h4>🔵 机会 O</h4><ul><li>AI + 食品是 2026-27 最大风口</li><li>本地高端甜点供给不足</li><li>小红书甜点内容红利仍在</li><li>可复制到多家酒店</li></ul></div>
+    <div class="cell t"><h4>🟡 威胁 T</h4><ul><li>大型连锁可能跟进 AI</li><li>经济下行消费收缩</li><li>酒店管理方顾虑独立品牌</li><li>食品安全/品控事故风险</li></ul></div>
+  </div>
+</div>
+
+<!-- ═══════════════ 三、产品体系 ═══════════════ -->
+<div class="page page-break" id="s3">
+  <h2>三、产品体系</h2>
+
+  <h3>3.1 四线产品架构</h3>
+  <table>
+    <thead><tr><th>产品线</th><th>定位</th><th>示例</th><th>价格带</th><th>库存模式</th></tr></thead>
+    <tbody>
+      <tr><td><strong>🟢 日常精品</strong></td><td>Walk-in 冲动消费</td><td>可颂、蛋糕卷、杯子蛋糕、泡芙、切片</td><td>¥22–58</td><td><span class="badge badge-green">即买即取</span></td></tr>
+      <tr><td><strong>🔵 庆祝定制</strong></td><td>生日/纪念日/商务</td><td>水果奶油、慕斯、芝士、千层</td><td>¥258–888</td><td><span class="badge badge-blue">提前 24h</span></td></tr>
+      <tr><td><strong>✨ 季节限定</strong></td><td>节日/季节限时</td><td>月饼礼盒、圣诞蛋糕、情人节限定</td><td>¥188–688</td><td><span class="badge badge-gold">限量预售</span></td></tr>
+      <tr><td><strong>🔮 AI 灵感工坊</strong></td><td>核心竞争力</td><td>文字描述 → AI 生成 3 张效果图 → 糕点师制作</td><td>¥588–1888</td><td><span class="badge badge-purple">48-72h</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3>3.2 产品组合策略</h3>
+  <div class="card-row">
+    <div class="card"><div class="icon">🚪</div><h4>引流款</h4><p style="font-size:13px;">可颂、杯子蛋糕<br>低价高频，拉新认知</p><div class="num" style="font-size:24px;">¥22-38</div></div>
+    <div class="card"><div class="icon">💰</div><h4>利润款</h4><p style="font-size:13px;">蛋糕卷、切片蛋糕<br>日常收入主力</p><div class="num" style="font-size:24px;">¥38-58</div></div>
+    <div class="card"><div class="icon">👑</div><h4>形象款</h4><p style="font-size:13px;">定制蛋糕、季节限定<br>品牌调性、传播素材</p><div class="num" style="font-size:24px;">¥288-888</div></div>
+    <div class="card" style="border-color:var(--gold);"><div class="icon">🔐</div><h4>壁垒款</h4><p style="font-size:13px;">AI 灵感工坊<br>差异化、传播引爆</p><div class="num" style="font-size:24px;">¥588+</div></div>
+  </div>
+
+  <h3>3.3 双模式一览</h3>
+  <table>
+    <thead><tr><th></th><th>🟢 即买即取 Grab &amp; Go</th><th>🔵 提前预约 Pre-order</th></tr></thead>
+    <tbody>
+      <tr><td><strong>产品数</strong></td><td>~15 款</td><td>~25 款</td></tr>
+      <tr><td><strong>提前期</strong></td><td>无需</td><td>24-72 小时</td></tr>
+      <tr><td><strong>库存显示</strong></td><td>"仅剩 X 件"</td><td>"现在下单，明天 14:00 可取"</td></tr>
+      <tr><td><strong>典型场景</strong></td><td>下午茶、伴手礼、一人食</td><td>生日、纪念日、商务、宴会</td></tr>
+      <tr><td><strong>取货方式</strong></td><td>到店自提 / 客房配送</td><td>自提 / 客房 / 餐厅堂食</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════ 四、AI 技术战略 ═══════════════ -->
+<div class="page page-break" id="s4">
+  <h2>四、AI 技术战略</h2>
+
+  <h3>4.1 三层 AI 引擎</h3>
+  <table>
+    <thead><tr><th>层级</th><th>引擎</th><th>模型</th><th>输入</th><th>输出</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Layer 1</strong></td>
+        <td>场景推荐引擎</td>
+        <td>qwen3.6-flash</td>
+        <td>场景+人数+预算+偏好+忌口</td>
+        <td>3 款推荐 + 理由 + 饮品搭配 + 匹配度</td>
+      </tr>
+      <tr>
+        <td><strong>Layer 2</strong></td>
+        <td>口味画像引擎</td>
+        <td>qwen3.6-flash</td>
+        <td>5 题口味问卷答案</td>
+        <td>Top 3 匹配蛋糕 + 个性化描述</td>
+      </tr>
+      <tr style="background:#FFF9F0;">
+        <td><strong>Layer 3 🔥</strong></td>
+        <td><strong>AI 图片生成引擎</strong></td>
+        <td><strong>通义万相</strong></td>
+        <td>用户文字描述+风格参数</td>
+        <td><strong>3 张蛋糕效果图 (1024×1024)</strong></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="warning">
+    <strong>免责提示：</strong>"效果图由 AI 生成，实际出品以糕点师制作为准"<br>
+    这反而增加了期待感和惊喜感，降低了对精确复刻的压力。
+  </div>
+
+  <h3>4.2 AI 图片生成用户旅程</h3>
+  <div class="flow">
+    <div class="step">✍️<br>描述梦想蛋糕</div>
+    <div class="arrow">→</div>
+    <div class="step active">🤖<br>AI 生成<br>3 张效果图</div>
+    <div class="arrow">→</div>
+    <div class="step">👆<br>选择满意款<br>或重新生成</div>
+    <div class="arrow">→</div>
+    <div class="step">📋<br>自动转<br>预约单</div>
+    <div class="arrow">→</div>
+    <div class="step">👨‍🍳<br>糕点师<br>参考制作</div>
+    <div class="arrow">→</div>
+    <div class="step">📸<br>取货对比<br>分享传播</div>
+  </div>
+
+  <h3>4.3 AI 能力演进</h3>
+  <table>
+    <thead><tr><th>阶段</th><th>AI 能力</th><th>技术</th></tr></thead>
+    <tbody>
+      <tr><td>Phase 1</td><td>场景推荐</td><td>qwen3.6-flash</td></tr>
+      <tr><td>Phase 2</td><td>+ 口味问卷 + AI 图片生成</td><td>qwen + 通义万相</td></tr>
+      <tr><td>Phase 3</td><td>+ 个性化复购推荐</td><td>qwen + 用户画像</td></tr>
+      <tr><td>Phase 4</td><td>+ AI 口味预测（浏览行为）</td><td>行为序列模型</td></tr>
+      <tr><td>Phase 5</td><td>+ AI 定价优化</td><td>需求预测分析</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════ 五、用户体验 ═══════════════ -->
+<div class="page page-break" id="s5">
+  <h2>五、用户体验设计</h2>
+
+  <h3>5.1 三条核心旅程</h3>
+
+  <h4>旅程 A：即买即取 <span class="badge badge-green">&lt; 60 秒</span></h4>
+  <div class="flow">
+    <div class="step">📱<br>扫码</div><div class="arrow">→</div>
+    <div class="step">🟢<br>现货区浏览</div><div class="arrow">→</div>
+    <div class="step">🔍<br>蛋糕详情</div><div class="arrow">→</div>
+    <div class="step">📋<br>锁定保留</div><div class="arrow">→</div>
+    <div class="step">✅<br>到店取货</div>
+  </div>
+
+  <h4>旅程 B：提前预约 <span class="badge badge-blue">&lt; 120 秒</span></h4>
+  <div class="flow">
+    <div class="step">📱<br>扫码</div><div class="arrow">→</div>
+    <div class="step">🎂<br>选场景</div><div class="arrow">→</div>
+    <div class="step active">🤖<br>AI 推荐 3 款</div><div class="arrow">→</div>
+    <div class="step">📐<br>选尺寸配件</div><div class="arrow">→</div>
+    <div class="step">📋<br>填信息提交</div>
+  </div>
+
+  <h4>旅程 C：AI 图片定制 <span class="badge badge-purple">&lt; 180 秒</span></h4>
+  <div class="flow">
+    <div class="step">✍️<br>文字描述</div><div class="arrow">→</div>
+    <div class="step active">🤖<br>AI 生成 3 图</div><div class="arrow">→</div>
+    <div class="step">👆<br>选择确认</div><div class="arrow">→</div>
+    <div class="step">📋<br>填信息提交</div><div class="arrow">→</div>
+    <div class="step">👨‍🍳<br>糕点师制作</div>
+  </div>
+
+  <h3>5.2 设计原则</h3>
+  <div class="card-row">
+    <div class="card"><strong>01 3 步内完成</strong><p style="font-size:13px;">选品→填信息→提交，不要多余步骤</p></div>
+    <div class="card"><strong>02 视觉即决策</strong><p style="font-size:13px;">大图优先，文字辅助。蛋糕是视觉驱动的购买</p></div>
+    <div class="card"><strong>03 双模式一目了然</strong><p style="font-size:13px;">🟢 现货 vs 🔵 预约，颜色+位置区分</p></div>
+    <div class="card"><strong>04 移动优先</strong><p style="font-size:13px;">所有页面以手机屏幕为第一设计目标</p></div>
+  </div>
+
+  <h3>5.3 页面架构</h3>
+  <div class="diagram">
+首页 (/)
+├── Hero Banner（品牌 Logo + 今日主厨推荐）
+├── 🟢 即买即取（15 款，显示库存，横向滑动卡片）
+├── 🔵 提前预约（25 款，显示最早可取时间）
+├── 🎂 按场景发现（生日|纪念日|下午茶|商务|儿童|季节）
+├── ✨ AI 灵感工坊（"描述你梦想中的蛋糕 →"）
+└── 底部：品牌故事 + 团队 + 联系方式
+
+即买即取列表 (/grab-and-go)
+├── 分类筛选：可颂 | 蛋糕卷 | 杯子蛋糕 | 泡芙 | 切片
+└── 瀑布流卡片（库存角标）
+
+提前预约列表 (/pre-order)
+├── 分类筛选：场景 | 口味 | 类型
+└── 瀑布流卡片（预约标签）+ AI 推荐入口
+
+蛋糕详情 (/cake/:id)
+├── 大图轮播（3-5 张，含切面图）
+├── 库存标签 + 价格 + 蛋糕故事
+├── 口感层次 + 饮品搭配
+├── 尺寸选择器 + 配件选配
+└──「立即预约」+ 分享按钮</div>
+</div>
+
+<!-- ═══════════════ 六、运营 ═══════════════ -->
+<div class="page page-break" id="s6">
+  <h2>六、运营体系</h2>
+
+  <h3>6.1 预约状态流转</h3>
+  <div class="flow">
+    <div class="step">📝<br>客人提交</div><div class="arrow">→</div>
+    <div class="step" style="background:#FFF9E0;">🟡<br>待确认</div><div class="arrow">→</div>
+    <div class="step" style="background:#E8F5E9;">🟢<br>已确认</div><div class="arrow">→</div>
+    <div class="step" style="background:#E3F2FD;">🔵<br>制作中</div><div class="arrow">→</div>
+    <div class="step" style="background:#F3E5F5;">🟣<br>待取货</div><div class="arrow">→</div>
+    <div class="step">✅<br>已完成</div>
+  </div>
+
+  <h3>6.2 日常运营节奏</h3>
+  <table>
+    <thead><tr><th>频次</th><th>事项</th></tr></thead>
+    <tbody>
+      <tr><td><strong>每日 08:00</strong></td><td>糕点师更新今日现货库存</td></tr>
+      <tr><td><strong>每日 09:00</strong></td><td>电话确认昨日新预约</td></tr>
+      <tr><td><strong>每日 10-16 时</strong></td><td>制作预约蛋糕</td></tr>
+      <tr><td><strong>每日 18:00</strong></td><td>当日数据分析</td></tr>
+      <tr><td><strong>每周一</strong></td><td>更新本周主厨推荐</td></tr>
+      <tr><td><strong>每周三</strong></td><td>小红书内容发布（1-2 篇）</td></tr>
+      <tr><td><strong>每月初</strong></td><td>上月数据分析 + 调整产品阵容</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6.3 通知机制</h3>
+  <table>
+    <thead><tr><th>事件</th><th>通知对象</th><th>方式</th></tr></thead>
+    <tbody>
+      <tr><td>新预约提交</td><td>糕点团队</td><td>钉钉/企微机器人</td></tr>
+      <tr><td>预约确认</td><td>客人</td><td>短信/电话</td></tr>
+      <tr><td>蛋糕制作完成</td><td>客人</td><td>短信提醒取货</td></tr>
+      <tr><td>现货库存 < 3 件</td><td>糕点团队</td><td>后台预警</td></tr>
+      <tr><td>新预约未处理 > 4h</td><td>糕点团队</td><td>二次提醒</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════ 七、推广与增长 ═══════════════ -->
+<div class="page page-break" id="s7">
+  <h2>七、推广与增长</h2>
+
+  <h3>7.1 小红书内容矩阵</h3>
+  <table>
+    <thead><tr><th>内容类型</th><th>频次</th><th>目的</th></tr></thead>
+    <tbody>
+      <tr><td><strong>🔪 蛋糕切面</strong></td><td>每周 2 篇</td><td>视觉冲击，最高互动率内容</td></tr>
+      <tr><td><strong>👨‍🍳 糕点师日常</strong></td><td>每周 1 篇</td><td>人格化品牌，建立信任</td></tr>
+      <tr><td><strong>🤖 AI 定制 vs 成品对比</strong></td><td>每单可做</td><td>话题引爆，差异化展示</td></tr>
+      <tr><td><strong>🎄 季节限定预告</strong></td><td>每月 1 篇</td><td>制造期待，提前锁客</td></tr>
+      <tr><td><strong>📸 客人返图（授权分享）</strong></td><td>每周 1-2 篇</td><td>社会证明，UGC 杠杆</td></tr>
+      <tr><td><strong>📖 蛋糕故事</strong></td><td>每周 1 篇</td><td>内容深度，品牌沉淀</td></tr>
+    </tbody>
+  </table>
+
+  <div class="highlight">
+    <strong>发布节奏：</strong>最佳发布时间 周四-周日 12:00 / 18:00 / 21:00<br>
+    <strong>核心标签：</strong>#汀·作 #CakeAndCo #酒店甜品 #AI甜品 #蛋糕定制
+  </div>
+
+  <h3>7.2 QR 码 7 触点矩阵</h3>
+  <table>
+    <thead><tr><th>触点</th><th>内容钩子</th></tr></thead>
+    <tbody>
+      <tr><td>🏨 大堂吧桌面立牌</td><td>"今日即买即取，扫码查看"</td></tr>
+      <tr><td>🍰 饼房橱窗</td><td>"扫码预约定制蛋糕"</td></tr>
+      <tr><td>🛏️ 客房欢迎卡</td><td>"在房间享用下午茶？扫码点单"</td></tr>
+      <tr><td>🛗 酒店电梯海报</td><td>季节限定新品</td></tr>
+      <tr><td>🏷️ 退房前台</td><td>"带一份甜蜜回家"</td></tr>
+      <tr><td>📋 酒店 Flyer</td><td>品牌介绍 + QR</td></tr>
+      <tr><td>📱 小红书主页/评论区</td><td>"在线选购 →"</td></tr>
+    </tbody>
+  </table>
+
+  <h3>7.3 增长飞轮</h3>
+  <div class="diagram" style="text-align:center;">
+                    ┌──────────────────┐
+                    │  🎂 优质产品+内容   │
+                    │ （蛋糕+故事+视觉）  │
+                    └────────┬─────────┘
+                             ↓
+              ┌──────────────┴──────────────┐
+              ↓                             ↓
+      ┌───────────┐                 ┌───────────┐
+      │ 📱 小红书   │                 │ 🏨 酒店住客 │
+      │ 陌生触达    │                 │ 即时转化    │
+      └─────┬─────┘                 └─────┬─────┘
+            ↓                               ↓
+            └──────────────┬──────────────┘
+                           ↓
+                   ┌──────────────┐
+                   │ 📋 扫码→预约   │
+                   │ 😋 体验→满意   │
+                   └──────┬───────┘
+                          ↓
+                   ┌──────────────┐
+                   │ 📸 自发分享/返图│
+                   │ 🔁 复购+推荐   │
+                   └──────────────┘
+                          ↓
+                   （回到顶部循环）</div>
+</div>
+
+<!-- ═══════════════ 八、技术架构 ═══════════════ -->
+<div class="page page-break" id="s8">
+  <h2>八、技术架构</h2>
+
+  <h3>8.1 技术选型</h3>
+  <table>
+    <thead><tr><th style="width:20%">层</th><th>技术</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>前端</td><td>React 18 + TS + Vite + MUI 6</td><td>与 WinePair 一致，组件可复用</td></tr>
+      <tr><td>后端</td><td>Express 4 + TS + Prisma 6</td><td>与 WinePair 一致</td></tr>
+      <tr><td>数据库</td><td>Supabase PostgreSQL</td><td>与 WinePair 同实例</td></tr>
+      <tr><td>AI 文本</td><td>DashScope qwen3.6-flash</td><td>场景推荐 + 口味问卷</td></tr>
+      <tr><td>AI 图像</td><td>通义万相（DashScope）</td><td>AI 图片生成（Phase 2）</td></tr>
+      <tr><td>部署</td><td>阿里云 + Nginx + PM2</td><td>cakeandco.julianli.net</td></tr>
+      <tr><td>PWA</td><td>Vite PWA + Workbox</td><td>扫码即用、离线缓存</td></tr>
+    </tbody>
+  </table>
+
+  <h3>8.2 系统架构</h3>
+  <div class="diagram">
+用户设备（微信扫码 / Safari / Chrome）
+        ↓ HTTPS
+Nginx (47.99.139.95)
+├── cakeandco.julianli.net → /www/wwwroot/cakeandco/
+└── /cake-api/ → 127.0.0.1:3002
+        ↓
+Express Server (:3002)
+├── Middleware: rate-limit, CORS, i18n
+├── Routes: cakes, reservations, recommend
+└── Services: qwenService, wanxiangService, ruleEngine, notify
+        ↓
+┌───────────────────┬───────────────────┐
+│  Supabase (DB)    │  DashScope (AI)   │
+│  cakes, orders,   │  qwen + 通义万相  │
+│  analytics        │                   │
+└───────────────────┴───────────────────┘</div>
+
+  <h3>8.3 核心数据表</h3>
+  <table>
+    <thead><tr><th>表</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td><code>cakes</code></td><td>蛋糕主表（名称/分类/库存模式/故事/图片/尺寸/价格）</td></tr>
+      <tr><td><code>cake_tags</code></td><td>场景/口味/饮食标签</td></tr>
+      <tr><td><code>reservations</code></td><td>预约订单（客人信息/蛋糕/尺寸/取货时间/状态）</td></tr>
+      <tr><td><code>ai_customizations</code></td><td>AI 图片定制记录</td></tr>
+      <tr><td><code>recommendations</code></td><td>推荐历史（AI/降级/结果快照）</td></tr>
+      <tr><td><code>analytics_events</code></td><td>事件追踪（浏览/点击/转化）</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════ 九、数据与指标 ═══════════════ -->
+<div class="page page-break" id="s9">
+  <h2>九、数据与指标</h2>
+
+  <div class="stats">
+    <div class="stat"><div class="num">>5%</div><div class="label">浏览→预约转化率</div></div>
+    <div class="stat"><div class="num">>30%</div><div class="label">AI 推荐使用率</div></div>
+    <div class="stat"><div class="num">>85%</div><div class="label">预约完成率</div></div>
+    <div class="stat"><div class="num"><3s</div><div class="label">页面加载时间</div></div>
+  </div>
+
+  <table>
+    <thead><tr><th>阶段</th><th>核心指标</th><th>目标</th></tr></thead>
+    <tbody>
+      <tr><td>Phase 1 验证期</td><td>周预约单数</td><td>> 10 单/周</td></tr>
+      <tr><td>Phase 2 AI 增强</td><td>AI 推荐使用率</td><td>> 30% 用户使用 AI</td></tr>
+      <tr><td>Phase 3 品牌建设</td><td>小红书粉丝 / 自然流量</td><td>> 5,000 / > 40%</td></tr>
+      <tr><td>Phase 4 规模化</td><td>月订单数 / 复购率</td><td>> 200 单/月 / > 25%</td></tr>
+    </tbody>
+  </table>
+
+  <h3>转化漏斗</h3>
+  <div class="funnel">
+    <div class="layer" style="width:100%;background:var(--cocoa);">📱 扫码 100% (1,234)</div>
+    <div class="layer" style="width:72%;background:var(--cocoa);opacity:0.8;">🔍 浏览蛋糕 72% (892)</div>
+    <div class="layer" style="width:35%;background:var(--cocoa);opacity:0.6;">🤖 使用 AI 推荐 35% (432)</div>
+    <div class="layer" style="width:15%;background:var(--gold);">📋 进入预约流程 15% (185)</div>
+    <div class="layer" style="width:7%;background:var(--gold);opacity:0.7;">✅ 提交预约 7% (87)</div>
+  </div>
+</div>
+
+<!-- ═══════════════ 十、路线图 ═══════════════ -->
+<div class="page page-break" id="s10">
+  <h2>十、分阶段路线图</h2>
+
+  <div class="timeline">
+    <div class="phase">
+      <div class="phase-num">1</div>
+      <div class="phase-content">
+        <h4>Phase 1 · 验证版 <span class="badge badge-green">5-7 天</span></h4>
+        <p style="font-size:13px;color:var(--text-light);">
+          <strong>目标：</strong>验证「五星酒店数字化蛋糕订购」是否有真实需求<br>
+          <strong>范围：</strong>蛋糕目录（~40 款）+ 双模式 + AI 场景推荐 + 预约表单 + 通知 + 基础后台 + PWA 部署<br>
+          <strong>不含：</strong>AI 图片生成、口味问卷、服务员端、数据分析<br>
+          <strong>指标：</strong>周预约 > 10 单，浏览→预约转化 > 3%
+        </p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">2</div>
+      <div class="phase-content">
+        <h4>Phase 2 · AI 增强版 <span class="badge badge-blue">2-3 周</span></h4>
+        <p style="font-size:13px;color:var(--text-light);">
+          <strong>目标：</strong>上线 AI 图片生成定制，建立核心竞争力<br>
+          <strong>新增：</strong>通义万相图片生成 + 口味问卷 + 今日主厨推荐 + 蛋糕故事 + 服务员端 + 数据看板 + 配件选配<br>
+          <strong>指标：</strong>AI 定制月 > 20 单，AI 使用率 > 30%
+        </p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">3</div>
+      <div class="phase-content">
+        <h4>Phase 3 · 品牌建设 <span class="badge badge-gold">2-3 周</span></h4>
+        <p style="font-size:13px;color:var(--text-light);">
+          <strong>目标：</strong>小红书运营 + 微信小程序，建立品牌认知<br>
+          <strong>新增：</strong>微信小程序 + 小红书内容体系 + 订阅消息 + 附近小程序 + UGC 收集 + 品牌视觉定稿<br>
+          <strong>指标：</strong>小红书 > 5K 粉丝，自然流量 > 30%
+        </p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">4</div>
+      <div class="phase-content">
+        <h4>Phase 4 · 规模化 <span class="badge badge-purple">按需</span></h4>
+        <p style="font-size:13px;color:var(--text-light);">
+          <strong>方向：</strong>微信支付/支付宝 + 会员体系 + 社交裂变 + 多酒店 SaaS + AI 定价 + 企业客户 + 配送合作<br>
+          <strong>指标：</strong>月 > 200 单，复购 > 25%
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ 十一、风险 ═══════════════ -->
+<div class="page page-break" id="s11">
+  <h2>十一、风险评估与对策</h2>
+
+  <table>
+    <thead><tr><th>风险</th><th style="width:12%">可能性</th><th style="width:12%">影响</th><th>对策</th></tr></thead>
+    <tbody>
+      <tr><td>酒店管理方不认可独立品牌</td><td>中</td><td>高</td><td>提前沟通独立品牌对酒店的引流价值；保留"由 XX 酒店饼房出品"背书</td></tr>
+      <tr><td>糕点团队不适应数字化运营</td><td>中</td><td>中</td><td>极简后台设计，减少操作步骤；初期可由我方协助维护</td></tr>
+      <tr><td>AI 图片生成效果不理想</td><td>中</td><td>中</td><td>设置合理预期（免责文案）；持续优化 prompt；积累糕点师反馈迭代</td></tr>
+      <tr><td>需求量超饼房产能</td><td>低(初期)</td><td>中(成长)</td><td>提前设预约上限；排队机制；后期增设产能</td></tr>
+      <tr style="background:#FFF5F5;"><td><strong>食品安全/品控事故</strong></td><td><strong>低</strong></td><td><strong>极高</strong></td><td><strong>严格品控流程；过敏原信息必须准确；保留酒店原有食品安全体系</strong></td></tr>
+      <tr><td>竞品快速跟进 AI 功能</td><td>中</td><td>中</td><td>持续迭代 AI，靠体验和数据积累建立壁垒；12-18 月先发窗口</td></tr>
+      <tr><td>商标注册失败</td><td>低</td><td>高</td><td>备用方案：甜时 Sweet Time / 酥语 Sussurré / 匠甜 Artisan Sweet</td></tr>
+      <tr><td>经济下行高端消费收缩</td><td>中</td><td>中</td><td>保持产品线宽度（¥28 可颂到 ¥1888 定制），覆盖不同预算</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════ 十二、愿景 ═══════════════ -->
+<div class="page" id="s12">
+  <h2>十二、长期愿景</h2>
+
+  <h3>三年路线</h3>
+  <table>
+    <thead><tr><th>年份</th><th>阶段</th><th>里程碑</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Year 1</strong><br>2026-2027</td><td>验证 + 品牌建立</td><td>单店月订单 > 100 · 小红书 > 10K 粉丝 · AI 定制成为行业标杆</td></tr>
+      <tr><td><strong>Year 2</strong><br>2027-2028</td><td>扩展 + 商业化</td><td>3-5 家酒店 · SaaS 多租户 · 支付闭环 · 企业客户线 · SaaS 收入</td></tr>
+      <tr><td><strong>Year 3</strong><br>2028-2029</td><td>规模化 + 品类扩展</td><td>10+ 酒店 · 全品类甜点 · AI 产品共创平台 · 品牌 IP 化 · 探索出海</td></tr>
+    </tbody>
+  </table>
+
+  <div class="highlight" style="text-align:center;">
+    <p style="font-size:17px;line-height:2;color:var(--cocoa);">
+      Cake &amp; Co. 不止是一个蛋糕订购工具。<br><br>
+      它是<strong>连接五星饼房品质与消费者庆祝时刻的桥梁</strong>。<br>
+      它是<strong>糕点师创造力的放大器</strong>——AI 不是取代糕点师，<br>而是让他们的手艺被更多人看见。<br>
+      它是从 <strong>"酒店里有家饼房"到"这家饼房刚好在酒店里"</strong> 的认知翻转。<br><br>
+      当人们想到「庆祝」「定制蛋糕」「精致甜点」时，<br>第一个想到的不是好利来、不是 Lady M，<br>而是 <strong>Cake &amp; Co. 汀·作</strong>。
+    </p>
+  </div>
+
+  <hr>
+  <p style="text-align:center;color:var(--text-light);font-size:13px;">
+    Cake &amp; Co. 汀·作 · 全方位策划书 v1.0<br>
+    2026 年 6 月 · 机密文件仅供内部讨论
+  </p>
+</div>
+
+</body>
+</html>

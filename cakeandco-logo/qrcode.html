@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cake &amp; Co. 汀·作</title>
+<style>
+  :root { --cream: #FFF9F0; --cocoa: #3C2415; --gold: #C8A45C; --gold-lt: rgba(200,164,92,0.15); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @keyframes foilShimmer { 0%,100% { opacity: 0.7 } 50% { opacity: 1; filter: brightness(1.15) } }
+
+  body {
+    font-family: Georgia, "Noto Serif SC", "STSong", serif;
+    background: var(--cream);
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh; padding: 24px;
+    background-image: radial-gradient(circle, rgba(200,164,92,0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  .card {
+    background: #FFFDF9;
+    border-radius: 12px;
+    padding: 56px 44px 40px;
+    text-align: center;
+    box-shadow: 0 2px 24px rgba(60,36,21,0.06);
+    max-width: 400px;
+    border: 1px solid var(--gold-lt);
+  }
+
+  .brand-mark {
+    position: relative; display: inline-block; margin-bottom: 28px; width: 72px; height: 72px;
+  }
+  .brand-mark .r1, .brand-mark .r2, .brand-mark .r3 {
+    position: absolute; border-radius: 50%;
+    top: 50%; left: 50%; transform: translate(-50%,-50%);
+  }
+  .brand-mark .r1 { width: 72px; height: 72px; background: rgba(200,164,92,0.06); }
+  .brand-mark .r2 { width: 52px; height: 52px; background: rgba(200,164,92,0.12); }
+  .brand-mark .r3 { width: 28px; height: 28px;
+    background: linear-gradient(135deg, #E8D080 0%, #C8A45C 30%, #B8922E 60%, #C8A45C 100%);
+    box-shadow: 0 2px 10px rgba(200,164,92,0.4), inset 0 1px 2px rgba(255,255,255,0.5);
+    animation: foilShimmer 3s ease-in-out infinite;
+  }
+
+  h1 {
+    font-family: Georgia, serif;
+    font-size: 22px; letter-spacing: 3px; color: var(--cocoa);
+    margin-bottom: 2px;
+    text-shadow: 0 1px 1px rgba(200,164,92,0.15), 0 -1px 0 rgba(255,255,255,0.4);
+  }
+  .cn-box { display: flex; align-items: baseline; justify-content: center; gap: 4px; margin-bottom: 28px; }
+  .cn-box span { font-family: "Noto Serif SC", serif; font-size: 14px; letter-spacing: 5px; color: var(--cocoa); }
+  .cn-dot { width: 4px; height: 4px; border-radius: 50%; background: linear-gradient(135deg, #E8D080, #C8A45C, #B8922E); box-shadow: 0 1px 2px rgba(200,164,92,0.4); }
+
+  .divider { display: flex; align-items: center; gap: 12px; margin: 24px 0; }
+  .divider .line { flex: 1; height: 1px; background: rgba(200,164,92,0.2); }
+  .divider .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); opacity: 0.5; flex-shrink: 0; }
+
+  #qrcode {
+    display: inline-block; padding: 14px;
+    background: white; border-radius: 8px;
+    border: 1px solid var(--gold-lt);
+  }
+
+  .url { font-family: Georgia, serif; font-size: 13px; color: rgba(60,36,21,0.5); letter-spacing: 1px; margin-top: 12px; }
+  .tagline { font-family: "Noto Serif SC", serif; font-size: 12px; color: rgba(60,36,21,0.4); letter-spacing: 2px; }
+  .tagline span { color: var(--gold); }
+
+  @media print {
+    body { background: white; background-image: none; }
+    .card { box-shadow: none; border: 1px solid rgba(200,164,92,0.3); }
+    @page { margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="brand-mark">
+    <div class="r1"></div><div class="r2"></div><div class="r3"></div>
+  </div>
+
+  <h1>CAKE &amp; CO</h1>
+  <div class="cn-box"><span>汀</span><div class="cn-dot"></div><span>作</span></div>
+
+  <div class="divider"><div class="line"></div><div class="dot"></div><div class="line"></div></div>
+
+  <div id="qrcode">
+    <img src="data:image/png;base64,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">
+  </div>
+
+  <div class="divider"><div class="line"></div><div class="dot"></div><div class="line"></div></div>
+
+  <div class="tagline">扫码浏览菜单 · 在线预约<br><span>匠心之作，因你而甜</span></div>
+</div>
+
+</body>
+</html>

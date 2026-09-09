@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
 
 ## Shared Infrastructure
 
@@ -64,7 +64,7 @@ No build step — personal site is static HTML/CSS/JS served directly.
 - **PM2**: `pm2 start index.js --name julianli-server` (port 3001 on production, separate from WinePair on 3000)
 - **API key**: `DASHSCOPE_API_KEY` in `.env`, separate from WinePair's key
 
-> **WinePair development**: `cd winepair` — that directory has its own CLAUDE.md with full WinePair architecture, AI services, database, deployment, and roadmap.
+> **WinePair development**: `cd winepair` — that directory has its own AGENTS.md with full WinePair architecture, AI services, database, deployment, and roadmap.
 
 ## Cake & Co. 汀·作
 

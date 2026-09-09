@@ -4,7 +4,8 @@ import { config } from "../config.js";
 
 export interface AuthUser {
   id: string;
-  username: string;
+  username?: string;
+  openid?: string;
   role: string;
 }
 

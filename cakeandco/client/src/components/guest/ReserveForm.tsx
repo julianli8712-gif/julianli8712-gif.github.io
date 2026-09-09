@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Typography, TextField, Button, Card, CardMedia, CardContent, Chip, IconButton } from "@mui/material";
+import { Box, Typography, TextField, Button, Card, CardMedia, CardContent, Chip, IconButton, Alert } from "@mui/material";
 import ArrowBack from "@mui/icons-material/ArrowBack";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useTranslation } from "react-i18next";
@@ -15,6 +15,7 @@ export default function ReserveForm({ cake, size, price, aiImage, aiPrompt, onBa
   const [guestName, setGuestName] = useState("");
   const [guestPhone, setGuestPhone] = useState("");
   const [message, setMessage] = useState("");
+  const [specialReq, setSpecialReq] = useState("");
   const [pickupTime, setPickupTime] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState<Reservation | null>(null);
@@ -42,6 +43,7 @@ export default function ReserveForm({ cake, size, price, aiImage, aiPrompt, onBa
         isAiCustom: !!aiImage,
         aiPrompt: aiPrompt || undefined,
         aiImageUrl: aiImage || undefined,
+        specialRequirements: specialReq || undefined,
         ...(status ? { status } as any : {}),
       });
       setSuccess(res);
@@ -133,12 +135,31 @@ export default function ReserveForm({ cake, size, price, aiImage, aiPrompt, onBa
           ))}
         </Box>
         <TextField label={t("reserve.message")} value={message} onChange={(e) => setMessage(e.target.value)} multiline rows={2} fullWidth placeholder={t("reserve.messagePlaceholder")} />
+
+        {/* AI Special Requirements */}
+        {aiImage && (
+          <TextField
+            label={t("reserve.specialReq")}
+            value={specialReq}
+            onChange={(e) => setSpecialReq(e.target.value.slice(0, 500))}
+            multiline rows={3} fullWidth
+            placeholder={t("reserve.specialReqHint")}
+          />
+        )}
+
         {error && !error.includes("手机") && (
           <Typography variant="body2" color="error">{error}</Typography>
         )}
         <Button variant="contained" size="large" fullWidth onClick={handleSubmit} disabled={submitting} sx={{ py: 1.5, fontSize: 15 }}>
           {submitting ? t("reserve.submitting") : t("reserve.submit")}
         </Button>
+
+        {/* AI Disclaimer */}
+        {aiImage && (
+          <Alert severity="info" sx={{ mt: 2, fontFamily: "'Noto Serif SC', serif", fontSize: 12, lineHeight: 1.6 }}>
+            {t("reserve.aiDisclaimer")}
+          </Alert>
+        )}
       </Box>
     </Box>
   );

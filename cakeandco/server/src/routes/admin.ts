@@ -4,6 +4,7 @@ import multer from "multer";
 import path from "path";
 import bcrypt from "bcryptjs";
 import { prisma } from "../lib/prisma.js";
+import { sendNotification } from "../services/notify.js";
 import { jwtAuth, requireAdmin } from "../middleware/auth.js";
 
 export const adminRouter = Router();
@@ -161,18 +162,34 @@ adminRouter.delete("/cakes/:id", async (req: Request, res: Response) => {
 
 adminRouter.get("/reservations", async (req: Request, res: Response) => {
   try {
-    const { status, start, end } = req.query;
+    const { status, start, end, date: queryDate, sort } = req.query;
     const where: any = {};
     if (status) where.status = status;
-    if (start || end) {
+
+    // "today" filter — shortcuts to pickupTime within current day
+    if (queryDate === "today") {
+      const now = new Date();
+      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+      const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+      where.pickupTime = { gte: startOfDay, lte: endOfDay };
+    } else if (start || end) {
       where.pickupTime = {};
       if (start) where.pickupTime.gte = new Date(start as string);
       if (end) where.pickupTime.lte = new Date(end as string);
     }
 
+    // Sort: default pickup_asc so nearest pickup first
+    const sortParam = (sort as string) || "pickup_asc";
+    const orderByMap: Record<string, any> = {
+      pickup_asc: { pickupTime: "asc" },
+      pickup_desc: { pickupTime: "desc" },
+      created_desc: { createdAt: "desc" },
+    };
+    const orderBy = orderByMap[sortParam] || orderByMap.pickup_asc;
+
     const reservations = await prisma.reservation.findMany({
       where,
-      orderBy: { createdAt: "desc" },
+      orderBy,
       take: 100,
     });
     const formatted = reservations.map((r) => ({ ...r, totalPrice: r.totalPrice ? Number(r.totalPrice) : null }));
@@ -185,7 +202,7 @@ adminRouter.get("/reservations", async (req: Request, res: Response) => {
 adminRouter.patch("/reservations/:id/status", async (req: Request, res: Response) => {
   try {
     const { status } = req.body;
-    const validStatuses = ["PENDING", "CONFIRMED", "MAKING", "READY", "COMPLETED", "CANCELLED"];
+    const validStatuses = ["PENDING", "PENDING_AI", "CONFIRMED", "MAKING", "READY", "COMPLETED", "CANCELLED"];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ code: 400, data: null, message: "Invalid status" });
     }
@@ -196,6 +213,7 @@ adminRouter.patch("/reservations/:id/status", async (req: Request, res: Response
     // State machine enforcement
     const allowed: Record<string, string[]> = {
       PENDING: ["CONFIRMED", "CANCELLED"],
+      PENDING_AI: ["CONFIRMED", "CANCELLED"],
       CONFIRMED: ["MAKING", "CANCELLED"],
       MAKING: ["READY", "CANCELLED"],
       READY: ["COMPLETED", "CANCELLED"],
@@ -208,6 +226,19 @@ adminRouter.patch("/reservations/:id/status", async (req: Request, res: Response
 
     const updated = await prisma.reservation.update({ where: { id: req.params.id }, data: { status } });
     audit(req, "UPDATE_RESERVATION", `${reservation.cakeName} #${req.params.id.slice(0, 8)} ${reservation.status}->${status}`);
+
+    // Push notification to WeCom bot
+    const emojiMap: Record<string, string> = {
+      CONFIRMED: "✅", MAKING: "🔪", READY: "📦", COMPLETED: "🏁", CANCELLED: "❌",
+    };
+    const labelMap: Record<string, string> = {
+      CONFIRMED: "已确认", MAKING: "制作中", READY: "待取货", COMPLETED: "已完成", CANCELLED: "已取消",
+    };
+    const sizeText = reservation.size ? ` ${reservation.size}` : "";
+    sendNotification(
+      `${emojiMap[status] || "📌"} 订单状态更新 · ${labelMap[status] || status}\n${reservation.cakeName}${sizeText} × ${reservation.quantity}\n客人：${reservation.guestName} ${reservation.guestPhone}\n取货：${new Date(reservation.pickupTime).toLocaleString("zh-CN")}\n${reservation.status} → ${status}`
+    );
+
     res.json({ code: 0, data: { ...updated, totalPrice: updated.totalPrice ? Number(updated.totalPrice) : null }, message: "Status updated" });
   } catch (err: any) {
     res.status(500).json({ code: 500, data: null, message: err.message });
@@ -221,9 +252,13 @@ adminRouter.get("/tags", async (_req: Request, res: Response) => {
 });
 
 // --- Users (ADMIN only) ---
+// Prisma 6.19.3 Linux bug: User model dropped → all queries use raw SQL
 adminRouter.get("/users", requireAdmin, async (_req: Request, res: Response) => {
-  const users = await prisma.user.findMany({ orderBy: { createdAt: "desc" }, select: { id: true, username: true, role: true, createdAt: true } });
-  res.json({ code: 0, data: users, message: "ok" });
+  const users = await prisma.$queryRawUnsafe<Array<{ id: string; username: string; role: string; created_at: string }>>(
+    `SELECT id, username, role, created_at FROM staff_accounts ORDER BY created_at DESC`
+  );
+  const formatted = users.map((u: any) => ({ id: u.id, username: u.username, role: u.role, createdAt: u.created_at }));
+  res.json({ code: 0, data: formatted, message: "ok" });
 });
 
 adminRouter.post("/users", requireAdmin, async (req: Request, res: Response) => {
@@ -233,13 +268,19 @@ adminRouter.post("/users", requireAdmin, async (req: Request, res: Response) => 
     if (username.length < 2 || username.length > 30) return res.status(400).json({ code: 400, data: null, message: "用户名长度2-30位" });
     if (password.length < 6) return res.status(400).json({ code: 400, data: null, message: "密码至少6位" });
 
-    const exists = await prisma.user.findUnique({ where: { username } });
-    if (exists) return res.status(400).json({ code: 400, data: null, message: "用户名已存在" });
+    const existing = await prisma.$queryRawUnsafe<Array<{ id: string }>>(
+      `SELECT id FROM staff_accounts WHERE username = $1 LIMIT 1`, username
+    );
+    if (existing.length > 0) return res.status(400).json({ code: 400, data: null, message: "用户名已存在" });
 
     const passwordHash = await bcrypt.hash(password, 10);
-    const user = await prisma.user.create({ data: { username, passwordHash, role: role || "STAFF" } });
+    const rows = await prisma.$queryRawUnsafe<Array<{ id: string; username: string; role: string; created_at: string }>>(
+      `INSERT INTO staff_accounts (username, password_hash, role) VALUES ($1, $2, $3) RETURNING id, username, role, created_at`,
+      username, passwordHash, role || "STAFF"
+    );
+    const user = rows[0];
     audit(req, "CREATE_USER", `${username} (${user.id.slice(0, 8)})`);
-    res.json({ code: 0, data: { id: user.id, username: user.username, role: user.role, createdAt: user.createdAt }, message: "ok" });
+    res.json({ code: 0, data: { id: user.id, username: user.username, role: user.role, createdAt: user.created_at }, message: "ok" });
   } catch (err: any) {
     res.status(500).json({ code: 500, data: null, message: err.message });
   }
@@ -253,16 +294,25 @@ adminRouter.put("/users/:id", requireAdmin, async (req: Request, res: Response) 
       return res.status(400).json({ code: 400, data: null, message: "不能修改自己的角色" });
     }
 
-    const data: any = {};
-    if (role) data.role = role;
+    const setClauses: string[] = [];
+    const values: any[] = [];
+    if (role) { setClauses.push(`role = $${values.length + 1}`); values.push(role); }
     if (password) {
       if (password.length < 6) return res.status(400).json({ code: 400, data: null, message: "密码至少6位" });
-      data.passwordHash = await bcrypt.hash(password, 10);
+      const passwordHash = await bcrypt.hash(password, 10);
+      setClauses.push(`password_hash = $${values.length + 1}`);
+      values.push(passwordHash);
     }
+    if (setClauses.length === 0) return res.status(400).json({ code: 400, data: null, message: "无更新内容" });
 
-    const user = await prisma.user.update({ where: { id: req.params.id }, data, select: { id: true, username: true, role: true, createdAt: true } });
+    values.push(req.params.id);
+    const rows = await prisma.$queryRawUnsafe<Array<{ id: string; username: string; role: string; created_at: string }>>(
+      `UPDATE staff_accounts SET ${setClauses.join(", ")} WHERE id = $${values.length}::uuid RETURNING id, username, role, created_at`,
+      ...values
+    );
+    const user = rows[0];
     audit(req, "UPDATE_USER", `${user.username} (${req.params.id.slice(0, 8)})`);
-    res.json({ code: 0, data: user, message: "ok" });
+    res.json({ code: 0, data: { id: user.id, username: user.username, role: user.role, createdAt: user.created_at }, message: "ok" });
   } catch (err: any) {
     res.status(500).json({ code: 500, data: null, message: err.message });
   }
@@ -275,15 +325,21 @@ adminRouter.delete("/users/:id", requireAdmin, async (req: Request, res: Respons
       return res.status(400).json({ code: 400, data: null, message: "不能删除自己" });
     }
 
-    const user = await prisma.user.findUnique({ where: { id: req.params.id } });
+    const rows = await prisma.$queryRawUnsafe<Array<{ id: string; username: string; role: string }>>(
+      `SELECT id, username, role FROM staff_accounts WHERE id = $1::uuid LIMIT 1`, req.params.id
+    );
+    const user = rows[0];
     if (!user) return res.status(404).json({ code: 404, data: null, message: "User not found" });
 
     if (user.role === "ADMIN") {
-      const adminCount = await prisma.user.count({ where: { role: "ADMIN" } });
+      const countRows = await prisma.$queryRawUnsafe<Array<{ cnt: string }>>(
+        `SELECT COUNT(*)::text AS cnt FROM staff_accounts WHERE role = 'ADMIN'`
+      );
+      const adminCount = parseInt(countRows[0].cnt, 10);
       if (adminCount <= 1) return res.status(400).json({ code: 400, data: null, message: "不能删除最后一个管理员" });
     }
 
-    await prisma.user.delete({ where: { id: req.params.id } });
+    await prisma.$executeRawUnsafe(`DELETE FROM staff_accounts WHERE id = $1::uuid`, req.params.id);
     audit(req, "DELETE_USER", `${user.username} (${req.params.id.slice(0, 8)})`);
     res.json({ code: 0, data: null, message: "User deleted" });
   } catch (err: any) {

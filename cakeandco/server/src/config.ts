@@ -10,10 +10,19 @@ export const config = {
   aiBaseUrl: process.env.AI_BASE_URL || "https://dashscope.aliyuncs.com/compatible-mode/v1",
   // Auth
   jwtSecret: process.env.JWT_SECRET || "",
+  // WeChat Mini Program
+  wechatAppId: process.env.WECHAT_APPID || "",
+  wechatAppSecret: process.env.WECHAT_APPSECRET || "",
+  // WeChat message push (server URL verification)
+  wechatMsgToken: process.env.WECHAT_MSG_TOKEN || "",
+  wechatMsgAesKey: process.env.WECHAT_MSG_AESKEY || "",
   // Notification webhook (DingTalk / WeCom)
   notifyWebhook: process.env.NOTIFY_WEBHOOK || "",
-  // Production domain
+  // Domain for cake orders
   domain: process.env.DOMAIN || "cakeandco.julianli.net",
+  // Bar (Digital Sommelier)
+  barDomain: process.env.BAR_DOMAIN || "pair.julianli.net",
+  exportDir: process.env.EXPORT_DIR || "/www/wwwroot/julianli/exports",
 };
 
 export const isDev = config.nodeEnv === "development";

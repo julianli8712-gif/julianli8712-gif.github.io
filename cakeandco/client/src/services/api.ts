@@ -68,6 +68,7 @@ export async function createReservation(input: {
   isAiCustom?: boolean;
   aiPrompt?: string;
   aiImageUrl?: string;
+  specialRequirements?: string;
 }): Promise<Reservation> {
   const { data } = await api.post<ApiResponse<Reservation>>("/reservations", input);
   return data.data;
@@ -122,10 +123,20 @@ export async function deleteCake(id: string): Promise<void> {
   await api.delete(`/admin/cakes/${id}`, adminHeaders());
 }
 
-export async function fetchAdminReservations(status?: string): Promise<Reservation[]> {
+export async function fetchAdminReservations(options?: {
+  status?: string;
+  date?: string;
+  start?: string;
+  end?: string;
+}): Promise<Reservation[]> {
+  const params: Record<string, string> = {};
+  if (options?.status) params.status = options.status;
+  if (options?.date) params.date = options.date;
+  if (options?.start) params.start = options.start;
+  if (options?.end) params.end = options.end;
   const { data } = await api.get<ApiResponse<Reservation[]>>("/admin/reservations", {
     ...adminHeaders(),
-    params: status ? { status } : {},
+    params: Object.keys(params).length > 0 ? params : undefined,
   });
   return data.data;
 }

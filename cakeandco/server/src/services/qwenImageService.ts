@@ -11,6 +11,14 @@ if (!fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
 
+// Style/angle variants — one per image to force diverse outputs.
+// Each gets its own independent API call with a different perspective.
+const STYLE_VARIANTS = [
+  "Overhead flat lay on marble surface, showing full cake top design, bright natural light, clean minimal composition.",
+  "45-degree angle on elegant table setting with afternoon window light, romantic ambiance, golden hour tones, soft bokeh.",
+  "Close-up detail shot highlighting texture and layers, editorial food magazine style, natural diffused light.",
+];
+
 export interface AiImageResult {
   url: string;
   width: number;
@@ -91,63 +99,66 @@ function downloadFile(url: string, dest: string): Promise<void> {
   });
 }
 
+function delay(ms: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
 /**
  * Call Qwen-Image-2.0 to generate N cake design previews.
  * Uses DashScope multimodal-generation API directly (NOT OpenAI-compatible chat).
  * Downloads temp OSS URLs to local disk and returns permanent URLs.
+ * Staggers 3 independent API calls (each with a different style variant) by 700ms
+ * to avoid DashScope burst throttle, while keeping each n=1 for output diversity.
  */
 export async function generateCakeImages(
   prompt: string,
-  n: number = 3
+  _n: number = 3
 ): Promise<AiImageResult[]> {
-  const enhancedPrompt = `A luxury custom cake design: ${prompt}. Professional food photography, elegant presentation, 5-star hotel pastry quality, editorial style, natural lighting, shallow depth of field, warm golden tones.`;
+  const basePrompt = `A luxury custom cake design: ${prompt}. Professional food photography, 5-star hotel pastry quality, editorial style.`;
 
-  // Step 1: Generate images via DashScope multimodal-generation API
-  const genResp = await postJson(
-    "dashscope.aliyuncs.com",
-    "/api/v1/services/aigc/multimodal-generation/generation",
-    {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${config.dashscopeApiKey}`,
-    },
-    JSON.stringify({
-      model: "qwen-image-2.0",
-      input: {
-        messages: [
-          {
-            role: "user",
-            content: [{ text: enhancedPrompt }],
-          },
-        ],
-      },
-      parameters: {
-        size: "1024*1024",
-        n,
-        watermark: false,
-        prompt_extend: true,
-      },
-    })
-  );
-
-  if (!genResp.output?.choices?.[0]?.message?.content) {
-    console.error("[qwen-image] Unexpected response:", JSON.stringify(genResp).slice(0, 500));
-    throw new Error(genResp.message || "Image generation failed");
-  }
-
-  const content = genResp.output.choices[0].message.content;
-  const imageItems = content.filter(
-    (c: any) => c.image || c.image_url?.url || c.url
-  );
-
-  if (imageItems.length === 0) {
-    throw new Error("No images in response");
-  }
-
-  // Step 2: Download each image and save locally
   const results: AiImageResult[] = [];
-  for (let i = 0; i < imageItems.length; i++) {
-    const imgUrl =
-      imageItems[i]?.image || imageItems[i]?.image_url?.url || imageItems[i]?.url;
+
+  for (let i = 0; i < STYLE_VARIANTS.length; i++) {
+    if (i > 0) await delay(700);
+
+    const fullPrompt = `${basePrompt} ${STYLE_VARIANTS[i]}`;
+
+    const resp = await postJson(
+      "dashscope.aliyuncs.com",
+      "/api/v1/services/aigc/multimodal-generation/generation",
+      {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${config.dashscopeApiKey}`,
+      },
+      JSON.stringify({
+        model: "qwen-image-2.0",
+        input: {
+          messages: [
+            {
+              role: "user",
+              content: [{ text: fullPrompt }],
+            },
+          ],
+        },
+        parameters: {
+          size: "1024*1024",
+          n: 1,
+          watermark: false,
+          prompt_extend: true,
+        },
+      })
+    );
+
+    if (!resp.output?.choices?.[0]?.message?.content) {
+      console.error("[qwen-image] Unexpected response:", JSON.stringify(resp).slice(0, 500));
+      continue;
+    }
+
+    const content = resp.output.choices[0].message.content;
+    const imageItem = content.find((c: any) => c.image || c.image_url?.url || c.url);
+    if (!imageItem) continue;
+
+    const imgUrl = imageItem.image || imageItem.image_url?.url || imageItem.url;
     if (!imgUrl) continue;
 
     const filename = `ai-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.png`;
@@ -155,18 +166,14 @@ export async function generateCakeImages(
 
     try {
       await downloadFile(imgUrl, destPath);
-      results.push({
-        url: `/img/cakes/${filename}`,
-        width: genResp.usage?.width || 1024,
-        height: genResp.usage?.height || 1024,
-      });
+      results.push({ url: `/img/cakes/${filename}`, width: 1024, height: 1024 });
     } catch (err: any) {
-      console.error(`[qwen-image] Download failed for image ${i}:`, err.message);
+      console.error(`[qwen-image] Download failed:`, err.message);
     }
   }
 
   if (results.length === 0) {
-    throw new Error("Failed to download any generated images");
+    throw new Error("Failed to generate any images");
   }
 
   return results;

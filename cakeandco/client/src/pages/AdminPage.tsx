@@ -12,6 +12,7 @@ import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import RestoreIcon from "@mui/icons-material/Restore";
 import LogoutIcon from "@mui/icons-material/Logout";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Badge from "@mui/material/Badge";
 import {
   login, fetchMe,
   fetchAdminCakes, createCake, updateCake, deleteCake,
@@ -25,9 +26,28 @@ const STATUS_LABELS: Record<string, { label: string; color: any }> = {
   PENDING_AI: { label: "AI 定制", color: "secondary" },
   CONFIRMED: { label: "已确认", color: "info" },
   MAKING: { label: "制作中", color: "primary" },
-  READY: { label: "待取货", color: "secondary" },
-  COMPLETED: { label: "已完成", color: "success" },
-  CANCELLED: { label: "已取消", color: "default" },
+  READY: { label: "待取货", color: "success" },
+  COMPLETED: { label: "已完成", color: "default" },
+  CANCELLED: { label: "已取消", color: "error" },
+};
+
+// Status chip color mapping — distinct colors per status for quick visual scan
+const STATUS_COLORS: Record<string, string> = {
+  PENDING:     "#F5A623",  // amber
+  PENDING_AI:  "#B482DC",  // purple
+  CONFIRMED:   "#5A9FD4",  // blue
+  MAKING:      "#4A6FA5",  // steel blue
+  READY:       "#5B8C5A",  // green
+  COMPLETED:   "#9E9E9E",  // grey
+  CANCELLED:   "#E57373",  // red
+};
+
+// Filter groups: which statuses belong to each tab
+const FILTER_GROUPS: Record<string, string[]> = {
+  active:   ["PENDING", "PENDING_AI", "CONFIRMED", "MAKING", "READY"],
+  completed: ["COMPLETED"],
+  cancelled: ["CANCELLED"],
+  all:       ["PENDING", "PENDING_AI", "CONFIRMED", "MAKING", "READY", "COMPLETED", "CANCELLED"],
 };
 
 const API_BASE = "/cake-api";
@@ -181,15 +201,28 @@ function CakeTab() {
 function ReservationTab() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(false);
-  const [start, setStart] = useState(""); const [end, setEnd] = useState(""); const [status, setStatus] = useState("");
+  const [activeFilter, setActiveFilter] = useState("today");
+  const [start, setStart] = useState(""); const [end, setEnd] = useState("");
   const [statusDialog, setStatusDialog] = useState<{ id: string; newStatus: string } | null>(null);
   const [snack, setSnack] = useState<{ msg: string; severity: "success" | "error" } | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
-    try { setReservations(await fetchAdminReservations()); } catch { setSnack({ msg: "加载失败", severity: "error" }); }
+    try {
+      const opts: { status?: string; date?: string; start?: string; end?: string } = {};
+      if (activeFilter === "today") opts.date = "today";
+      else if (activeFilter !== "all") {
+        // active/completed/cancelled — filter by status group
+        const group = FILTER_GROUPS[activeFilter];
+        if (group && group.length === 1) opts.status = group[0];
+      }
+      if (start) opts.start = start;
+      if (end) opts.end = end;
+      setReservations(await fetchAdminReservations(opts));
+    } catch { setSnack({ msg: "加载失败", severity: "error" }); }
     setLoading(false);
-  }, []);
+  }, [activeFilter, start, end]);
   useEffect(() => { load(); }, [load]);
 
   const confirmStatus = async () => {
@@ -198,43 +231,172 @@ function ReservationTab() {
     setStatusDialog(null);
   };
 
+  // Filter by active tab group + optional date range (client-side fallback for non-today groups)
+  const filtered = reservations.filter((r) => {
+    if (start && new Date(r.pickupTime) < new Date(start)) return false;
+    if (end && new Date(r.pickupTime) > new Date(end + "T23:59:59")) return false;
+    return true;
+  });
+
+  // Count per group (separate fetch for counts)
+  const [counts, setCounts] = useState({ today: 0, active: 0, completed: 0, cancelled: 0, all: 0 });
+  useEffect(() => {
+    (async () => {
+      try {
+        const all = await fetchAdminReservations();
+        const todayStr = new Date().toISOString().slice(0, 10);
+        setCounts({
+          today: all.filter((r) => r.pickupTime.slice(0, 10) === todayStr).length,
+          active: all.filter((r) => FILTER_GROUPS.active.includes(r.status)).length,
+          completed: all.filter((r) => FILTER_GROUPS.completed.includes(r.status)).length,
+          cancelled: all.filter((r) => FILTER_GROUPS.cancelled.includes(r.status)).length,
+          all: all.length,
+        });
+      } catch {}
+    })();
+  }, [reservations.length > 0 ? 1 : 0]); // eslint-disable-line
+
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const now = new Date();
+
+  const renderPickupTime = (pickupTime: string, status: string) => {
+    const d = new Date(pickupTime);
+    const isToday = pickupTime.slice(0, 10) === todayStr;
+    const isOverdue = d < now && ["PENDING", "PENDING_AI", "CONFIRMED", "MAKING"].includes(status);
+    return (
+      <Typography
+        component="span"
+        sx={{
+          fontSize: "0.875rem",
+          fontWeight: isToday ? 700 : 400,
+          color: isOverdue ? "#E57373" : isToday ? "#E65100" : "text.primary",
+        }}
+      >
+        {d.toLocaleString("zh-CN", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+      </Typography>
+    );
+  };
+
+  const renderStatusChip = (status: string) => (
+    <Chip
+      label={STATUS_LABELS[status]?.label}
+      size="small"
+      sx={{
+        bgcolor: STATUS_COLORS[status] || "#999",
+        color: "#FFF",
+        fontWeight: 600,
+        fontSize: 11,
+        minWidth: 64,
+      }}
+    />
+  );
+
   return (
     <Box>
-      <Box sx={{ display: "flex", gap: 1, mb: 2, flexWrap: "wrap" }}>
-        <TextField type="date" size="small" label="开始" value={start} onChange={(e) => setStart(e.target.value)} InputLabelProps={{ shrink: true }} />
-        <TextField type="date" size="small" label="结束" value={end} onChange={(e) => setEnd(e.target.value)} InputLabelProps={{ shrink: true }} />
-        <FormControl size="small" sx={{ minWidth: 100 }}><InputLabel>状态</InputLabel>
-          <Select value={status} onChange={(e) => setStatus(e.target.value)} label="状态"><MenuItem value="">全部</MenuItem>{Object.entries(STATUS_LABELS).map(([k, v]) => <MenuItem key={k} value={k}>{v.label}</MenuItem>)}</Select>
-        </FormControl>
+      {/* Filter tabs */}
+      <Box sx={{ display: "flex", gap: 0.5, mb: 2, flexWrap: "wrap", alignItems: "center" }}>
+        {[
+          { key: "today", label: "今日", icon: "📅" },
+          { key: "active", label: "待处理", icon: "🟡" },
+          { key: "completed", label: "已完成", icon: "✅" },
+          { key: "cancelled", label: "已取消", icon: "❌" },
+          { key: "all", label: "全部", icon: "📋" },
+        ].map((f) => (
+          <Chip
+            key={f.key}
+            label={<>{f.icon} {f.label} <b style={{ fontSize: 12 }}>{counts[f.key as keyof typeof counts]}</b></>}
+            size="small"
+            variant={activeFilter === f.key ? "filled" : "outlined"}
+            onClick={() => setActiveFilter(f.key)}
+            sx={{
+              fontFamily: "'Noto Serif SC', serif",
+              fontSize: 12,
+              cursor: "pointer",
+              bgcolor: activeFilter === f.key ? (f.key === "today" ? "#E65100" : "#3C2415") : undefined,
+              color: activeFilter === f.key ? "#FFF" : "text.secondary",
+              borderColor: "rgba(60,36,21,0.2)",
+              "&:hover": { bgcolor: activeFilter === f.key ? (f.key === "today" ? "#BF360C" : "#2A1810") : "rgba(60,36,21,0.04)" },
+            }}
+          />
+        ))}
+        <Box sx={{ flex: 1 }} />
+        <TextField type="date" size="small" label="从" value={start} onChange={(e) => setStart(e.target.value)} InputLabelProps={{ shrink: true }} sx={{ width: 140 }} />
+        <TextField type="date" size="small" label="至" value={end} onChange={(e) => setEnd(e.target.value)} InputLabelProps={{ shrink: true }} sx={{ width: 140 }} />
         <Button size="small" variant="outlined" onClick={load}>刷新</Button>
       </Box>
+
       {loading ? <CircularProgress sx={{ display: "block", mx: "auto", mt: 4, color: "#C8A45C" }} /> : (
         <TableContainer component={Paper}><Table size="small">
           <TableHead><TableRow><TableCell>客人</TableCell><TableCell>手机号</TableCell><TableCell>蛋糕</TableCell><TableCell>取货</TableCell><TableCell>状态</TableCell><TableCell>操作</TableCell></TableRow></TableHead>
-          <TableBody>{reservations.map((r) => (
-            <TableRow key={r.id} sx={r.isAiCustom ? { bgcolor: "rgba(180,130,220,0.04)" } : undefined}><TableCell>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                {r.guestName}
-                {r.isAiCustom && <Chip label="AI" size="small" sx={{ height: 18, fontSize: 10, bgcolor: "rgba(180,130,220,0.15)", color: "#B482DC", fontFamily: "Georgia, serif" }} />}
-              </Box>
-              {r.aiPrompt && (
-                <Typography variant="caption" color="text.secondary" sx={{ display: "block", maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontStyle: "italic" }}>
-                  💬 {r.aiPrompt}
-                </Typography>
-              )}
-              {r.aiImageUrl && (
-                <CardMedia component="img" image={r.aiImageUrl} alt="AI" sx={{ width: 48, height: 48, borderRadius: 1, mt: 0.5, cursor: "pointer", objectFit: "cover" }}
-                  onClick={() => window.open(r.aiImageUrl, "_blank")} />
-              )}
-            </TableCell><TableCell><Typography fontWeight={600}>{r.guestPhone}</Typography></TableCell>
-              <TableCell>{r.cakeName}{r.size && <Typography variant="caption"> ({r.size})</Typography>}</TableCell>
-              <TableCell>{new Date(r.pickupTime).toLocaleString("zh-CN")}</TableCell>
-              <TableCell><Chip label={STATUS_LABELS[r.status]?.label} size="small" color={STATUS_LABELS[r.status]?.color} /></TableCell>
-              <TableCell><FormControl size="small" sx={{ minWidth: 100 }}><Select value={r.status} onChange={(e) => setStatusDialog({ id: r.id, newStatus: e.target.value })} size="small">
-                {Object.entries(STATUS_LABELS).map(([key, { label }]) => <MenuItem key={key} value={key}>{label}</MenuItem>)}</Select></FormControl></TableCell>
-            </TableRow>
-          ))}</TableBody>
+          <TableBody>
+            {filtered.length === 0 && (
+              <TableRow><TableCell colSpan={6} sx={{ textAlign: "center", py: 4, color: "text.secondary" }}>
+                暂无订单
+              </TableCell></TableRow>
+            )}
+            {filtered.map((r) => {
+              const isExpanded = expandedId === r.id;
+              return (
+                <TableRow
+                  key={r.id}
+                  hover
+                  sx={{
+                    cursor: r.aiPrompt || r.message ? "pointer" : "default",
+                    bgcolor: r.isAiCustom ? "rgba(180,130,220,0.04)" : undefined,
+                  }}
+                  onClick={() => setExpandedId(isExpanded ? null : r.id)}
+                >
+                  <TableCell>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                      {r.guestName}
+                      {r.isAiCustom && <Chip label="AI" size="small" sx={{ height: 18, fontSize: 10, bgcolor: "rgba(180,130,220,0.15)", color: "#B482DC", fontFamily: "Georgia, serif" }} />}
+                    </Box>
+                    {/* Expandable extra info */}
+                    {isExpanded && (
+                      <Box sx={{ mt: 1, maxWidth: 200 }}>
+                        {r.aiPrompt && (
+                          <Typography variant="caption" color="text.secondary" sx={{ display: "block", fontStyle: "italic", lineHeight: 1.4, mb: 0.5 }}>
+                            💬 {r.aiPrompt}
+                          </Typography>
+                        )}
+                        {r.message && (
+                          <Typography variant="caption" color="text.secondary" sx={{ display: "block", lineHeight: 1.4 }}>
+                            🎁 {r.message}
+                          </Typography>
+                        )}
+                        {r.specialRequirements && (
+                          <Typography variant="caption" color="text.secondary" sx={{ display: "block", lineHeight: 1.4 }}>
+                            📝 {r.specialRequirements}
+                          </Typography>
+                        )}
+                        {r.aiImageUrl && (
+                          <CardMedia component="img" image={r.aiImageUrl} alt="AI" sx={{ width: 64, height: 64, borderRadius: 1, mt: 0.5, cursor: "pointer", objectFit: "cover" }}
+                            onClick={(e: React.MouseEvent) => { e.stopPropagation(); window.open(r.aiImageUrl, "_blank"); }} />
+                        )}
+                      </Box>
+                    )}
+                  </TableCell>
+                  <TableCell><Typography fontWeight={600}>{r.guestPhone}</Typography></TableCell>
+                  <TableCell>{r.cakeName}{r.size && <Typography variant="caption" sx={{ fontSize: 11 }}> ({r.size})</Typography>}</TableCell>
+                  <TableCell>{renderPickupTime(r.pickupTime, r.status)}</TableCell>
+                  <TableCell>{renderStatusChip(r.status)}</TableCell>
+                  <TableCell onClick={(e) => e.stopPropagation()}>
+                    <FormControl size="small" sx={{ minWidth: 90 }}>
+                      <Select value={r.status} onChange={(e) => setStatusDialog({ id: r.id, newStatus: e.target.value })} size="small" sx={{ fontSize: 12 }}>
+                        {Object.entries(STATUS_LABELS).map(([key, { label }]) => <MenuItem key={key} value={key} sx={{ fontSize: 12 }}>{label}</MenuItem>)}
+                      </Select>
+                    </FormControl>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
         </Table></TableContainer>
+      )}
+      {filtered.length > 0 && (
+        <Typography variant="body2" sx={{ mt: 1, color: "text.secondary", textAlign: "right", fontSize: 12 }}>
+          共 {filtered.length} 笔，按取货时间排序
+        </Typography>
       )}
       <Dialog open={!!statusDialog} onClose={() => setStatusDialog(null)}><DialogTitle>确认变更</DialogTitle><DialogContent>确定将状态改为「{STATUS_LABELS[statusDialog?.newStatus || ""]?.label}」？</DialogContent>
         <DialogActions><Button onClick={() => setStatusDialog(null)}>取消</Button><Button onClick={confirmStatus} variant="contained" sx={{ bgcolor: "#3C2415" }}>确认</Button></DialogActions></Dialog>

@@ -62,7 +62,10 @@
     "submitting": "提交中...",
     "success": "预约已提交，酒店将电话与您确认！",
     "errorFill": "请填写姓名、手机号和取货时间",
-    "errorSubmit": "预约失败，请重试"
+    "errorSubmit": "预约失败，请重试",
+    "specialReq": "特殊要求（选填）",
+    "specialReqHint": "如：6寸、动物奶油、无坚果、加高...",
+    "aiDisclaimer": "效果图为 AI 生成的概念设计，糕点师将与您电话确认细节后安排制作。最终成品可能存在差异。"
   },
   "aiStudio": {
     "title": "AI 灵感工坊",

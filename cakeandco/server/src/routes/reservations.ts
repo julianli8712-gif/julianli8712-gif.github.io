@@ -10,7 +10,7 @@ reservationsRouter.post("/", async (req: Request, res: Response) => {
     const {
       cakeId, cakeName, size, quantity, totalPrice, accessories,
       guestName, guestPhone, pickupMethod, pickupTime, message,
-      isAiCustom, aiPrompt, aiImageUrl, status: reqStatus,
+      isAiCustom, aiPrompt, aiImageUrl, specialRequirements, status: reqStatus,
     } = req.body;
 
     if (!guestName || !guestPhone || !pickupTime) {
@@ -25,17 +25,19 @@ reservationsRouter.post("/", async (req: Request, res: Response) => {
     if (message && message.length > 500) {
       return res.status(400).json({ code: 400, data: null, message: "祝福语过长" });
     }
+    if (specialRequirements && specialRequirements.length > 500) {
+      return res.status(400).json({ code: 400, data: null, message: "特殊要求过长" });
+    }
     // Validate pickup time is in the future
     const pickupDate = new Date(pickupTime);
     if (isNaN(pickupDate.getTime()) || pickupDate <= new Date()) {
       return res.status(400).json({ code: 400, data: null, message: "取货时间必须是未来时间" });
     }
 
-    // Create without aiImageUrl (not in generated Prisma client yet)
-    // then update with raw SQL
+    // Prisma 6.19.3 Linux bug: relation scalars must use connect syntax,
+    // and aiImageUrl is dropped from generated client → raw SQL required.
     const reservation = await prisma.reservation.create({
       data: {
-        cakeId: cakeId || null,
         cakeName: cakeName || "未指定蛋糕",
         size: size || null,
         quantity: quantity || 1,
@@ -49,14 +51,32 @@ reservationsRouter.post("/", async (req: Request, res: Response) => {
         status: (reqStatus === "PENDING_AI") ? "PENDING_AI" : "PENDING",
         isAiCustom: isAiCustom === true,
         aiPrompt: aiPrompt || null,
+        cake: cakeId ? { connect: { id: cakeId } } : undefined,
       },
     });
 
-    // Set aiImageUrl via raw SQL (prisma generate drops this field)
+    // Prisma 6.19.3 bug (Linux): aiImageUrl dropped from generated client → raw SQL
     if (aiImageUrl) {
+      const updateFields: string[] = [];
+      const updateValues: any[] = [];
+
+      updateFields.push(`ai_image_url = $${updateValues.length + 1}`);
+      updateValues.push(aiImageUrl);
+
+      if (specialRequirements) {
+        updateFields.push(`special_requirements = $${updateValues.length + 1}`);
+        updateValues.push(specialRequirements);
+      }
+
       await prisma.$executeRawUnsafe(
-        `UPDATE reservations SET ai_image_url = $1 WHERE id = $2::uuid`,
-        aiImageUrl,
+        `UPDATE reservations SET ${updateFields.join(", ")} WHERE id = $${updateValues.length + 1}::uuid`,
+        ...updateValues,
+        reservation.id
+      );
+    } else if (specialRequirements) {
+      await prisma.$executeRawUnsafe(
+        `UPDATE reservations SET special_requirements = $1 WHERE id = $2::uuid`,
+        specialRequirements,
         reservation.id
       );
     }
@@ -65,9 +85,10 @@ reservationsRouter.post("/", async (req: Request, res: Response) => {
     const notifyMsg = `🆕 新预约\n${cakeName}${sizeText} × ${quantity}${totalPrice ? ` ¥${totalPrice}` : ""}\n客人：${guestName} ${guestPhone}\n取货：${new Date(pickupTime).toLocaleString("zh-CN")}\n${message ? `祝福语：${message}` : ""}`;
     sendNotification(notifyMsg);
 
-    // Read back aiImageUrl from DB (raw SQL bypassed Prisma client)
-    const rawRows = await prisma.$queryRawUnsafe<Array<{ ai_image_url: string | null }>>(
-      `SELECT ai_image_url FROM reservations WHERE id = $1::uuid`,
+    // Prisma 6.19.3 bug (Linux): aiImageUrl dropped from generated client → raw SQL
+    // Read back aiImageUrl + specialRequirements via raw SQL
+    const rawRows = await prisma.$queryRawUnsafe<Array<{ ai_image_url: string | null; special_requirements: string | null }>>(
+      `SELECT ai_image_url, special_requirements FROM reservations WHERE id = $1::uuid`,
       reservation.id
     );
 
@@ -77,6 +98,7 @@ reservationsRouter.post("/", async (req: Request, res: Response) => {
         ...reservation,
         totalPrice: reservation.totalPrice != null ? Number(reservation.totalPrice) : null,
         aiImageUrl: rawRows?.[0]?.ai_image_url || aiImageUrl || null,
+        specialRequirements: rawRows?.[0]?.special_requirements || specialRequirements || null,
       },
       message: "预约已提交，酒店将电话确认",
     });
@@ -98,24 +120,28 @@ reservationsRouter.get("/", async (req: Request, res: Response) => {
       orderBy: { createdAt: "desc" },
       take: 20,
     });
-    // Fetch aiImageUrl from raw query (Prisma drops this field)
+
+    // Prisma 6.19.3 bug (Linux): aiImageUrl + specialRequirements dropped from generated client → raw SQL
     const allIds = reservations.map((r: any) => r.id);
     let aiUrlMap: Record<string, string | null> = {};
+    let specialReqMap: Record<string, string | null> = {};
     if (allIds.length > 0) {
       const idList = allIds.map((_: string, i: number) => `$${i + 1}::uuid`).join(",");
-      const rawRows = await prisma.$queryRawUnsafe<Array<{ id: string; ai_image_url: string | null }>>(
-        `SELECT id, ai_image_url FROM reservations WHERE id IN (${idList})`,
+      const rawRows = await prisma.$queryRawUnsafe<Array<{ id: string; ai_image_url: string | null; special_requirements: string | null }>>(
+        `SELECT id, ai_image_url, special_requirements FROM reservations WHERE id IN (${idList})`,
         ...allIds
       );
       for (const row of rawRows) {
         aiUrlMap[row.id] = row.ai_image_url || null;
+        specialReqMap[row.id] = row.special_requirements || null;
       }
     }
 
     const formatted = reservations.map((r: any) => ({
       ...r,
-      totalPrice: r.totalPrice ? Number(r.totalPrice) : null,
+      totalPrice: r.totalPrice != null ? Number(r.totalPrice) : null,
       aiImageUrl: aiUrlMap[r.id] || null,
+      specialRequirements: specialReqMap[r.id] || null,
     }));
     res.json({ code: 0, data: formatted, message: "ok" });
   } catch (err: any) {
@@ -130,16 +156,21 @@ reservationsRouter.get("/:id", async (req: Request, res: Response) => {
     if (!reservation) {
       return res.status(404).json({ code: 404, data: null, message: "Reservation not found" });
     }
-    // Fetch aiImageUrl from raw DB (prisma generate drops this field)
-    const rawRows = await prisma.$queryRawUnsafe<Array<{ ai_image_url: string | null }>>(
-      `SELECT ai_image_url FROM reservations WHERE id = $1::uuid`,
+
+    // Prisma 6.19.3 bug (Linux): aiImageUrl + specialRequirements dropped from generated client → raw SQL
+    const rawRows = await prisma.$queryRawUnsafe<Array<{ ai_image_url: string | null; special_requirements: string | null }>>(
+      `SELECT ai_image_url, special_requirements FROM reservations WHERE id = $1::uuid`,
       reservation.id
     );
-    const aiImageUrl = rawRows?.[0]?.ai_image_url || null;
 
     res.json({
       code: 0,
-      data: { ...reservation, totalPrice: reservation.totalPrice ? Number(reservation.totalPrice) : null, aiImageUrl },
+      data: {
+        ...reservation,
+        totalPrice: reservation.totalPrice != null ? Number(reservation.totalPrice) : null,
+        aiImageUrl: rawRows?.[0]?.ai_image_url || null,
+        specialRequirements: rawRows?.[0]?.special_requirements || null,
+      },
       message: "ok",
     });
   } catch (err: any) {
@@ -162,7 +193,11 @@ reservationsRouter.patch("/:id", async (req: Request, res: Response) => {
       where: { id: req.params.id },
       data: { status },
     });
-    res.json({ code: 0, data: { ...updated, totalPrice: updated.totalPrice ? Number(updated.totalPrice) : null }, message: "ok" });
+    res.json({
+      code: 0,
+      data: { ...updated, totalPrice: updated.totalPrice != null ? Number(updated.totalPrice) : null },
+      message: "ok",
+    });
   } catch (err: any) {
     res.status(500).json({ code: 500, data: null, message: "Failed to update reservation" });
   }

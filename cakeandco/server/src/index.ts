@@ -9,6 +9,13 @@ import { reservationsRouter } from "./routes/reservations.js";
 import { adminRouter } from "./routes/admin.js";
 import { authRouter } from "./routes/auth.js";
 import { tagsRouter } from "./routes/tags.js";
+import { wechatRouter } from "./routes/wechat.js";
+import { drinksRouter } from "./routes/drinks.js";
+import { foodsRouter } from "./routes/foods.js";
+import { barPairingRouter } from "./routes/barPairings.js";
+import { storyRouter } from "./routes/stories.js";
+import { exportRouter } from "./routes/exports.js";
+import { barAdminRouter } from "./routes/barAdmin.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
@@ -45,13 +52,26 @@ app.get("/cake-api/health", (_req, res) => {
   res.json({ name: "Cake & Co. API", status: "ok", version: "1.0.0" });
 });
 
-// API routes
+app.get("/bar-api/health", (_req, res) => {
+  res.json({ name: "Digital Sommelier API", status: "ok", version: "1.0.0" });
+});
+
+// Cake API routes
 app.use("/cake-api/cakes", cakesRouter);
 app.use("/cake-api/recommend", recommendationsRouter);
 app.use("/cake-api/reservations", reservationsRouter);
 app.use("/cake-api/auth", authRouter);
+app.use("/cake-api/wechat", wechatRouter);
 app.use("/cake-api/admin", adminRouter);
 app.use("/cake-api/tags", tagsRouter);
+
+// Bar API routes (Digital Sommelier)
+app.use("/bar-api/drinks", drinksRouter);
+app.use("/bar-api/foods", foodsRouter);
+app.use("/bar-api/pairings", barPairingRouter);
+app.use("/bar-api/stories", storyRouter);
+app.use("/bar-api/exports", exportRouter);
+app.use("/bar-api/admin", barAdminRouter);
 
 // Error handler
 app.use(errorHandler);

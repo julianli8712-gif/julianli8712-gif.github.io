@@ -73,9 +73,10 @@ model Reservation {
   pickupMethod String   @default("PICKUP") @map("pickup_method") @db.VarChar(20)
   pickupTime   DateTime @map("pickup_time") @db.Timestamptz()
   message      String?  @db.Text
-  aiPrompt     String?  @map("ai_prompt") @db.Text
-  aiImageUrl   String?  @map("ai_image_url") @db.VarChar(500)
-  status       String   @default("PENDING") @db.VarChar(20)
+  aiPrompt             String?  @map("ai_prompt") @db.Text
+  aiImageUrl           String?  @map("ai_image_url") @db.VarChar(500)
+  specialRequirements  String?  @map("special_requirements") @db.Text
+  status               String   @default("PENDING") @db.VarChar(20)
   staffNote    String?  @map("staff_note") @db.Text
   isAiCustom   Boolean  @default(false) @map("is_ai_custom")
   createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
@@ -106,4 +107,88 @@ model Recommendation {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
 
   @@map("recommendations")
+}
+
+// ─── Bar: Digital Sommelier ───────────────────────────────────────
+
+model BarProfile {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @db.VarChar(255)
+  nameEn      String?  @map("name_en") @db.VarChar(255)
+  description String?  @db.Text
+  logoUrl     String?  @map("logo_url") @db.VarChar(500)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  @@map("bar_profiles")
+}
+
+model Drink {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @db.VarChar(255)
+  nameEn      String?  @map("name_en") @db.VarChar(255)
+  type        String   @db.VarChar(50)       // WINE | COCKTAIL | SPIRIT | BEER | SAKE | OTHER
+  subtype     String?  @db.VarChar(50)       // RED | WHITE | ROSE | SPARKLING | FORTIFIED | GIN | WHISKY | etc.
+  region      String?  @db.VarChar(100)
+  producer    String?  @db.VarChar(255)
+  vintage     String?  @db.VarChar(20)
+  abv         Decimal? @db.Decimal(5, 2)
+  bottlePrice Decimal? @map("bottle_price") @db.Decimal(10, 2)
+  glassPrice  Decimal? @map("glass_price") @db.Decimal(10, 2)
+  description String?  @db.Text
+  tastingNote String?  @map("tasting_note") @db.Text
+  story       String?  @db.Text
+  flavorTags  String[] @map("flavor_tags")
+  imageUrl    String?  @map("image_url") @db.VarChar(500)
+  status      String   @default("ACTIVE") @db.VarChar(20)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  foodPairings FoodPairing[]
+
+  @@map("drinks")
+}
+
+model FoodItem {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @db.VarChar(255)
+  nameEn      String?  @map("name_en") @db.VarChar(255)
+  category    String?  @db.VarChar(50)       // SMALL_PLATE | CHEESE | DESSERT | CHARCUTERIE | SNACK | MAIN
+  description String?  @db.Text
+  flavorNote  String?  @map("flavor_note") @db.Text
+  story       String?  @db.Text
+  imageUrl    String?  @map("image_url") @db.VarChar(500)
+  status      String   @default("ACTIVE") @db.VarChar(20)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  drinkPairings FoodPairing[]
+
+  @@map("food_items")
+}
+
+model FoodPairing {
+  id        String   @id @default(uuid()) @db.Uuid
+  drinkId   String   @map("drink_id") @db.Uuid
+  foodId    String   @map("food_id") @db.Uuid
+  mode      String   @db.VarChar(30)  // CLASSIC | BOLD | STORY
+  reason    String?  @db.Text
+  story     String?  @db.Text
+  score     Int      @default(5)
+  drink     Drink    @relation(fields: [drinkId], references: [id], onDelete: Cascade)
+  food      FoodItem @relation(fields: [foodId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@map("food_pairings")
+}
+
+model BarExport {
+  id          String   @id @default(uuid()) @db.Uuid
+  type        String   @db.VarChar(30)  // MENU_INSERT | TABLE_CARD | STORY_CARD
+  title       String   @db.VarChar(255)
+  htmlContent String   @map("html_content") @db.Text
+  pdfUrl      String?  @map("pdf_url") @db.VarChar(500)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@map("bar_exports")
 }

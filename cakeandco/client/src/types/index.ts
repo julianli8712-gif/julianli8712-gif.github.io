@@ -49,6 +49,7 @@ export interface Reservation {
   message?: string;
   aiPrompt?: string;
   aiImageUrl?: string;
+  specialRequirements?: string;
   isAiCustom?: boolean;
   status: ReservationStatus;
   staffNote?: string;

@@ -62,7 +62,10 @@
     "submitting": "Submitting...",
     "success": "Reservation submitted. The hotel will call to confirm!",
     "errorFill": "Please fill in all required fields",
-    "errorSubmit": "Failed to submit. Please try again."
+    "errorSubmit": "Failed to submit. Please try again.",
+    "specialReq": "Special Requirements (optional)",
+    "specialReqHint": "e.g., 6-inch, fresh cream, nut-free, extra height...",
+    "aiDisclaimer": "The AI-generated image is a conceptual design. Our pastry team will contact you to confirm details before production. Final results may vary."
   },
   "aiStudio": {
     "title": "AI Design Studio",

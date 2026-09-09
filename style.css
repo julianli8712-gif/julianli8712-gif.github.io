@@ -1,16 +1,16 @@
 /* ====== 基础变量 ====== */
 :root {
-    --bg: hsl(210, 20%, 98%);
-    --text: hsl(210, 10%, 29%);
-    --text-muted: hsl(210, 10%, 46%);
+    --bg: #FAF7F2;
+    --text: #3D3226;
+    --text-muted: #6B5F52;
     --white: #ffffff;
-    --navy: hsl(210, 29%, 24%);
-    --navy-dark: hsl(210, 29%, 20%);
-    --accent: hsl(22, 91%, 54%);
-    --accent-hover: hsl(22, 91%, 48%);
-    --border: hsl(210, 20%, 90%);
-    --shadow-card: 0 8px 25px -8px hsl(210 29% 24% / 0.12);
-    --shadow-subtle: 0 2px 8px -2px hsl(210 29% 24% / 0.06);
+    --navy: #3C2415;
+    --navy-dark: #2D1A0E;
+    --accent: #C8A45C;
+    --accent-hover: #B89341;
+    --border: #E8E0D4;
+    --shadow-card: 0 8px 25px -8px rgba(60, 36, 21, 0.10);
+    --shadow-subtle: 0 2px 8px -2px rgba(60, 36, 21, 0.05);
     --radius: 0.75rem;
     --font-heading: "Georgia", "Noto Serif SC", "STSong", "Songti SC", serif;
     --font-body: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", sans-serif;
@@ -95,6 +95,7 @@ a {
 
 /* ====== Hero 主视觉 ====== */
 .hero {
+    position: relative;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -112,8 +113,8 @@ a {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 60px;
-    background: linear-gradient(to bottom, transparent, var(--bg));
+    height: 120px;
+    background: linear-gradient(to bottom, transparent, var(--navy-dark) 80%);
     pointer-events: none;
 }
 
@@ -157,21 +158,21 @@ a {
     font-family: var(--font-heading);
     font-size: 22px;
     font-weight: 400;
-    color: hsl(210, 20%, 80%);
+    color: #C8A45C;
     margin-bottom: 28px;
 }
 
 .hero-tagline {
     font-size: 16px;
     line-height: 1.7;
-    color: hsl(210, 20%, 72%);
+    color: #D4C5B0;
     margin-bottom: 12px;
 }
 
 .hero-location {
     font-size: 14px;
     font-weight: 500;
-    color: hsl(210, 20%, 62%);
+    color: #A89880;
     letter-spacing: 3px;
     text-transform: uppercase;
     margin-bottom: 40px;
@@ -204,13 +205,13 @@ a {
 .btn-primary:hover {
     background: var(--accent-hover);
     transform: translateY(-1px);
-    box-shadow: 0 8px 25px -8px hsl(22 91% 54% / 0.4);
+    box-shadow: 0 8px 25px -8px rgba(200, 164, 92, 0.25);
 }
 
 .btn-outline {
     background: transparent;
     color: #fff;
-    border: 2px solid hsl(210, 20%, 70%);
+    border: 2px solid #D4C5B0;
 }
 
 .btn-outline:hover {
@@ -226,7 +227,7 @@ a {
 }
 .card .btn-outline:hover,
 .section-alt .btn-outline:hover {
-    background: rgba(210, 80, 30, 0.06);
+    background: rgba(200, 164, 92, 0.06);
     border-color: var(--accent-hover);
     color: var(--accent-hover);
 }
@@ -314,6 +315,34 @@ a {
     color: var(--text-muted);
     font-size: 15px;
     line-height: 1.7;
+}
+
+/* ====== Project Brand Header ====== */
+.project-brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+.project-logo {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.project-brand-text h4 {
+    margin-bottom: 2px;
+}
+
+.project-tagline {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.3px;
 }
 
 .card strong {
@@ -477,7 +506,7 @@ a {
 
 .lang-level.native,
 .lang-level.fluent {
-    color: hsl(160, 60%, 40%);
+    color: #5B8C5A;
 }
 
 /* ====== 联系链接 ====== */
@@ -509,7 +538,7 @@ a {
 
 .contact-link:hover {
     border-color: var(--accent);
-    background: hsl(22, 91%, 54%, 0.04);
+    background: rgba(200, 164, 92, 0.06);
     color: var(--accent);
 }
 
@@ -538,7 +567,7 @@ a {
     padding: 32px 24px;
     text-align: center;
     background: var(--navy);
-    color: hsl(210, 20%, 70%);
+    color: #C8B898;
     font-size: 13px;
 }
 
@@ -555,7 +584,7 @@ a {
     background: var(--accent);
     color: #fff;
     cursor: pointer;
-    box-shadow: 0 4px 20px hsl(22 91% 54% / 0.35);
+    box-shadow: 0 4px 20px rgba(200, 164, 92, 0.30);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -564,13 +593,13 @@ a {
 }
 
 @keyframes fabPulse {
-    0%, 100% { box-shadow: 0 4px 20px hsl(22 91% 54% / 0.35); }
-    50% { box-shadow: 0 4px 32px hsl(22 91% 54% / 0.55); }
+    0%, 100% { box-shadow: 0 4px 20px rgba(200, 164, 92, 0.30); }
+    50% { box-shadow: 0 4px 32px rgba(200, 164, 92, 0.45); }
 }
 
 .chat-fab:hover {
     transform: translateY(-2px) scale(1.04);
-    box-shadow: 0 8px 36px hsl(22 91% 54% / 0.5);
+    box-shadow: 0 8px 36px rgba(200, 164, 92, 0.40);
     background: var(--accent-hover);
     animation: none;
 }
@@ -657,14 +686,14 @@ a {
 
 .chat-subtitle {
     font-size: 11px;
-    color: hsl(210, 20%, 70%);
+    color: #C8B898;
     margin-top: 2px;
 }
 
 .chat-close {
     background: none;
     border: none;
-    color: hsl(210, 20%, 70%);
+    color: #C8B898;
     font-size: 28px;
     cursor: pointer;
     padding: 0 4px;
@@ -682,12 +711,12 @@ a {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    background: hsl(210, 20%, 97%);
+    background: #FAF7F2;
 }
 
 .chat-body::-webkit-scrollbar { width: 5px; }
 .chat-body::-webkit-scrollbar-track { background: transparent; }
-.chat-body::-webkit-scrollbar-thumb { background: hsl(210, 10%, 80%); border-radius: 10px; }
+.chat-body::-webkit-scrollbar-thumb { background: #D4C5B0; border-radius: 10px; }
 
 /* ====== AI Chat: Messages ====== */
 .chat-message {
@@ -742,7 +771,7 @@ a {
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: hsl(210, 10%, 70%);
+    background: #B8AA98;
     animation: dotBounce 1.4s infinite ease-in-out both;
 }
 
@@ -765,7 +794,7 @@ a {
 
 .chat-preset {
     padding: 8px 16px;
-    border: 1px solid hsl(210, 10%, 80%);
+    border: 1px solid #D4C5B0;
     border-radius: 20px;
     background: #fff;
     color: var(--text);
@@ -779,7 +808,7 @@ a {
 .chat-preset:hover {
     border-color: var(--accent);
     color: var(--accent);
-    background: hsl(22, 91%, 54%, 0.05);
+    background: rgba(200, 164, 92, 0.08);
 }
 
 /* ====== AI Chat: Footer ====== */
@@ -803,7 +832,7 @@ a {
     outline: none;
     transition: border-color 0.2s ease;
     color: var(--text);
-    background: hsl(210, 20%, 97%);
+    background: #FAF7F2;
 }
 
 .chat-input:focus {
@@ -811,7 +840,7 @@ a {
 }
 
 .chat-input::placeholder {
-    color: hsl(210, 10%, 70%);
+    color: #C8B898;
 }
 
 .chat-send {
@@ -915,7 +944,7 @@ a {
 }
 
 .brand-dot {
-    color: hsl(210, 10%, 80%);
+    color: #C8B898;
     font-size: 14px;
     user-select: none;
 }
@@ -945,7 +974,7 @@ a {
     gap: 2px;
     max-width: 720px;
     margin: 48px auto 0;
-    background: rgba(255,255,255,0.08);
+    background: rgba(200, 164, 92, 0.15);
     border-radius: var(--radius);
     overflow: hidden;
 }
@@ -953,7 +982,7 @@ a {
 .stat-item {
     text-align: center;
     padding: 28px 20px;
-    background: rgba(255,255,255,0.06);
+    background: rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(8px);
 }
 
@@ -977,7 +1006,7 @@ a {
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: hsl(210, 20%, 68%);
+    color: #C8B898;
 }
 
 @media (max-width: 640px) {

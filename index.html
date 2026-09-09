@@ -19,6 +19,7 @@
             <a href="#experience">Experience</a>
             <a href="#education">Education</a>
             <a href="#appointments">Appointments</a>
+            <a href="#projects">Projects</a>
             <a href="#contact">Contact</a>
         </div>
     </nav>
@@ -186,7 +187,7 @@
     </section>
 
     <!-- ====== Education & Certifications ====== -->
-    <section id="education" class="section">
+    <section id="education" class="section section-alt">
         <div class="container">
             <h3 class="section-title reveal">Education & Certifications</h3>
             <div class="about-grid">
@@ -213,7 +214,7 @@
     </section>
 
     <!-- ====== Academic & Industry Appointments ====== -->
-    <section id="appointments" class="section section-alt">
+    <section id="appointments" class="section">
         <div class="container">
             <h3 class="section-title reveal">Academic & Industry Appointments</h3>
             <div class="about-grid">
@@ -235,23 +236,85 @@
                 </div>
 
                 <div class="card reveal">
-                    <h4>AI Product Developer</h4>
-                    <p class="timeline-org">WinePair — Restaurant Wine Recommendation System</p>
-                    <p>
-                        Designed and developed an AI-powered sommelier system deployed at Prego restaurant. Built with qwen3.6-flash, React, Express, and Supabase. Achieved 99/100 in pairing quality exam.
-                    </p>
-                    <a href="https://winepair.julianli.net" target="_blank" rel="noopener" class="btn btn-outline" style="margin-top:12px;display:inline-flex;align-items:center;gap:6px;">
-                        🍷 Visit WinePair
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-                    </a>
-                </div>
-
-                <div class="card reveal">
                     <h4>Industry Standards Expert</h4>
                     <p class="timeline-org">Ministry of Human Resources and Social Security</p>
                     <p>
                         Expert Reviewer for Catering Service Standards, contributing to national-level industry standards and policy development in the food service sector.
                     </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== AI Products ====== -->
+    <section id="projects" class="section section-alt">
+        <div class="container">
+            <h3 class="section-title reveal">AI Products</h3>
+            <p class="section-desc reveal">Building AI-native brands from traditional hotel operations</p>
+            <div class="about-grid">
+
+                <div class="card reveal">
+                    <div class="project-brand">
+                        <div class="project-logo">
+                            <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="wpGrad" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#722F37"/>
+                                        <stop offset="100%" stop-color="#4A1E24"/>
+                                    </linearGradient>
+                                </defs>
+                                <rect x="4" y="4" width="40" height="40" rx="10" fill="url(#wpGrad)"/>
+                                <path d="M24 14c-2 4-4 6-6 16h12c-2-10-4-12-6-16z" fill="none" stroke="#CFA862" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="24" cy="12" r="2.5" fill="#CFA862"/>
+                                <path d="M14 27h20" stroke="#CFA862" stroke-width="1.2" opacity="0.6"/>
+                                <path d="M16 31h16" stroke="#CFA862" stroke-width="1.2" opacity="0.4"/>
+                            </svg>
+                        </div>
+                        <div class="project-brand-text">
+                            <h4>WinePair</h4>
+                            <span class="project-tagline">Restaurant Sommelier · Prego, The Westin Beijing</span>
+                        </div>
+                    </div>
+                    <p>
+                        AI sommelier that closes the expertise gap when a certified sommelier isn't on the floor. Guests select dishes or wines, and qwen3.6-flash generates pairing recommendations with tiered rationale. Scored 99/100 on blind pairing quality exam. Built with React, Express, and Supabase.
+                    </p>
+                    <a href="https://winepair.julianli.net" target="_blank" rel="noopener" class="btn btn-outline" style="margin-top:12px;display:inline-flex;align-items:center;gap:6px;">
+                        winepair.julianli.net
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                    </a>
+                </div>
+
+                <div class="card reveal">
+                    <div class="project-brand">
+                        <div class="project-logo">
+                            <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <radialGradient id="ccGrad" cx="40%" cy="35%">
+                                        <stop offset="0%" stop-color="#E8D080"/>
+                                        <stop offset="50%" stop-color="#C8A45C"/>
+                                        <stop offset="100%" stop-color="#A07830"/>
+                                    </radialGradient>
+                                </defs>
+                                <rect x="1" y="1" width="46" height="46" rx="10" fill="#3C2415" opacity="0.04"/>
+                                <circle cx="24" cy="12" r="9" fill="url(#ccGrad)" opacity="0.15"/>
+                                <circle cx="24" cy="12" r="4.5" fill="url(#ccGrad)"/>
+                                <text x="24" y="37" text-anchor="middle" font-family="Georgia,serif" font-size="10" font-weight="700" fill="#3C2415" letter-spacing="1.5">CC</text>
+                                <circle cx="24" cy="37" r="2.2" fill="url(#ccGrad)" opacity="0.5"/>
+                            </svg>
+                        </div>
+                        <div class="project-brand-text">
+                            <h4>Cake &amp; Co. <span style="font-weight:400;color:#8B7355;">汀·作</span></h4>
+                            <span class="project-tagline">Hotel Patisserie, Reimagined · The Westin Beijing</span>
+                        </div>
+                    </div>
+                    <p>
+                        Transformed a traditional five-star hotel patisserie from a lobby counter into a standalone AI-native brand. Guests describe their ideal cake in natural language, Qwen-Image-2.0 generates a photorealistic preview in seconds, and the pastry team brings it to life. Delivering across Beijing's core districts — luxury hospitality craft, powered by AI.
+                    </p>
+                    <a href="https://cakeandco.julianli.net" target="_blank" rel="noopener" class="btn btn-outline" style="margin-top:12px;display:inline-flex;align-items:center;gap:6px;">
+                        cakeandco.julianli.net
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                    </a>
                 </div>
 
             </div>
@@ -383,7 +446,7 @@
 
     <script>
     (function() {
-        const API_BASE = 'https://julianli8712-gifgithubio-production.up.railway.app';
+        const API_BASE = '';
         const MAX_HISTORY = 20;
 
         // DOM

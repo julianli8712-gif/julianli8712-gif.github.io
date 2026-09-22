@@ -11,7 +11,10 @@ app.use(express.json());
 
 const client = new OpenAI({
   apiKey: process.env.DASHSCOPE_API_KEY,
-  baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1",
+  // 百炼专属域名 {workspaceId}.{region}.maas.aliyuncs.com
+  // 可用 DASHSCOPE_BASE_URL 覆盖——域名演进时只改配置不动代码。
+  // 老共享域名 dashscope.aliyuncs.com 已进入维护状态（2026-09-30 起，仍可用但不再迭代）
+  baseURL: process.env.DASHSCOPE_BASE_URL || "https://ws-v7oqs755ffhfr3h4.cn-beijing.maas.aliyuncs.com/compatible-mode/v1",
 });
 
 const SYSTEM_PROMPT = `你是 Julian Li 的 AI 助手。你代表他和访客进行专业、温暖、有见地的对话。你是资深的酒店人，不是客服机器人。

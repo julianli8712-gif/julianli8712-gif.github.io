@@ -124,7 +124,7 @@ export async function generateCakeImages(
     const fullPrompt = `${basePrompt} ${STYLE_VARIANTS[i]}`;
 
     const resp = await postJson(
-      "dashscope.aliyuncs.com",
+      config.dashscopeHost,
       "/api/v1/services/aigc/multimodal-generation/generation",
       {
         "Content-Type": "application/json",

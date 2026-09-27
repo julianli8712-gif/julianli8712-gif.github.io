@@ -270,6 +270,7 @@ async function handleChat(req, res, systemPrompt) {
       temperature: 0.6,
       max_tokens: 600,
       stream: true,
+      enable_thinking: false,
     }, { signal: controller.signal });
 
     clearTimeout(timeout);

@@ -81,15 +81,19 @@ recommendationsRouter.post("/occasion", aiLimiter, async (req: Request, res: Res
       isOffline = true;
     }
 
-    // Save recommendation record
-    await prisma.recommendation.create({
-      data: {
-        direction: "OCCASION",
-        sourceTags: [occasion, ...(preferences || []), ...(allergies || [])],
-        results: results.map((r) => ({ cakeId: r.cake?.id, reason: r.reason })),
-        isOffline,
-      },
-    });
+    // Save recommendation record (独立表 cake_recommendations，与 winepair 的 recommendations 隔离)
+    try {
+      await prisma.$executeRawUnsafe(
+        `INSERT INTO cake_recommendations (direction, source_tags, results, is_offline)
+         VALUES ($1, $2::text[], $3::jsonb, $4)`,
+        "OCCASION",
+        [occasion, ...(preferences || []), ...(allergies || [])],
+        JSON.stringify(results.map((r) => ({ cakeId: r.cake?.id, reason: r.reason }))),
+        isOffline
+      );
+    } catch (dbErr: any) {
+      console.warn("[recommend] Failed to save record:", dbErr.message);
+    }
 
     res.json({ code: 0, data: { results, isOffline }, message: "ok" });
   } catch (err: any) {
@@ -112,16 +116,16 @@ recommendationsRouter.post("/ai-image", imageLimiter, async (req: Request, res: 
 
     const images = await generateCakeImages(prompt.trim(), 3);
 
-    // Save recommendation record (skip if table schema mismatch)
+    // Save recommendation record (独立表 cake_recommendations)
     try {
-      await prisma.recommendation.create({
-        data: {
-          direction: "AI_IMAGE",
-          sourceTags: [prompt.trim()],
-          results: images.map((img) => ({ url: img.url })),
-          isOffline: false,
-        },
-      });
+      await prisma.$executeRawUnsafe(
+        `INSERT INTO cake_recommendations (direction, source_tags, results, is_offline)
+         VALUES ($1, $2::text[], $3::jsonb, $4)`,
+        "AI_IMAGE",
+        [prompt.trim()],
+        JSON.stringify(images.map((img) => ({ url: img.url }))),
+        false
+      );
     } catch (dbErr: any) {
       console.warn("[ai-image] Failed to save recommendation record:", dbErr.message);
     }

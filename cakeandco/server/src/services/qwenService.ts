@@ -77,6 +77,7 @@ ${cakeListText}
         ],
         temperature: 0.5,
         max_tokens: 600,
+        enable_thinking: false,
       },
       { timeout: 6000 }
     );

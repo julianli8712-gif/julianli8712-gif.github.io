@@ -76,7 +76,7 @@ app.use("/bar-api/admin", barAdminRouter);
 // Error handler
 app.use(errorHandler);
 
-const server = app.listen(config.port, () => {
+const server = app.listen(config.port, "127.0.0.1", () => {
   console.log(`🍰 Cake & Co. API running on port ${config.port}`);
   console.log(`   Mode: ${config.nodeEnv}`);
   console.log(`   Health: http://localhost:${config.port}/cake-api/health`);
